@@ -1,0 +1,28 @@
+{
+    // 调用立即执行的函数必须使用括号包裹
+	"immed": true,
+    // 缩进代码
+	"indent": 4,
+    // 禁止在变量定义之前使用它
+	"latedef": true,
+    // 禁止使用arguments.caller与arguments.callee.
+	"noarg": true,
+    // 不允许代码中出现空的语句块（"{}"）
+	"noempty": true,
+    // 只使用单引号
+	"quotmark": "single",
+    // 禁用 ==，!=
+    "eqeqeq": true,
+    // 该选项用于设置每个函数中代码块嵌套层级的上限
+    "maxdepth": 5,
+    // 值为false时，不允许在代码中使用eval
+    "evil": false,
+    // 允许在函数调用或赋值时使用表达式
+    "expr": true,
+    // 如果在控制语句中定义了变量，却在控制语句之外使用变量，则JSHint会给出警告
+    "funcscope": false,
+    // 允许单行语句块中最后一条语句不写分号；值为false时，则会给出警告
+    "lastsemic": false,
+    // 值为true时，允许用obj['name']和obj.name两种方式访问对象的属性
+    "sub": true
+}
