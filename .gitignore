@@ -2,14 +2,11 @@ node_modules
 .tmp
 .db
 .sass-cache
-.idea/
 page/
 design/
 .svn/
 .idea
 .DS_Store
-dist
-app/lib/
 test/bower_components
 coverage/
 karma.conf.js
