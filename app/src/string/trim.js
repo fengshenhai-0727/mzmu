@@ -1,3 +1,7 @@
-define(function(){
-    console.log('trim');
+define(function() {
+
+
+
+
+
 });

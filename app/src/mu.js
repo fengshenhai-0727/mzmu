@@ -1,7 +1,9 @@
 define([
     'base',
     'array',
-    'string'
+    'string',
+    'date',
+    'utility'
 ], function(mu){
     return mu;
 });
