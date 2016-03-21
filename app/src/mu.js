@@ -3,7 +3,6 @@ define([
     'array',
     'string',
     'date',
-    'utility'
-], function(mu){
-    return mu;
-});
+    'utility',
+    'dom'
+]);
