@@ -1,17 +1,16 @@
 {
-  "name": "atm",
+  "name": "mujs",
   "version": "0.1.0",
   "authors": [
     "Mizi <mizi.lin@hunteron.com>"
   ],
-  "description": "Admaster tags manager",
+  "description": "Mizi uitls by js",
   "main": "app/index.html",
   "keywords": [
-    "atm"
+    "mu",
+    "utils"
   ],
   "dependencies": {
-    "jquery": "~2.1.3",
-    "underscore": "~1.8.0"
   },
   "license": "MIT",
   "homepage": "www.mizi.club",
