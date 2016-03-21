@@ -106,7 +106,7 @@ define([], function(mu) {
         _.each(obj, function(v, k) {
             var cb = fn.call(context, v, k, obj);
 
-            if(cb !== '__remove_map__') {
+            if(cb !== C.REMOVE_MAP) {
                 if(_.isObject(rst)) {
                     if(cb && cb.__key__) {
                         rst[cb.__key__] = cb.__val__;

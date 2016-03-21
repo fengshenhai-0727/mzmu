@@ -8,10 +8,22 @@ define(function(mu) {
      * mu.args(Arguments args)
      * 将 Arguments 转为一个数组
      * @param args
+     * @param expand
      * @returns {Array.<T>}
      */
-    mu.args = function(/**Arguments*/args) {
-        return Array.prototype.slice.call(args, 0);
+    mu.args = function(/**Arguments*/args, /**{boolean}*/ expand, /**{int}*/ argslenth  ) {
+        args = Array.prototype.slice.call(args, 0);
+
+        if(expand){
+            _.each(args, function(v, i){
+                args['__' + i + '__'] = {
+                    type: _.type(v),
+                    val: v
+                };
+            });
+        }
+
+        return args;
     };
 
     /**
@@ -111,6 +123,16 @@ define(function(mu) {
         }
 
         return true;
+    };
+
+    /**
+     * mu.toStringWithType(Any any)
+     * toString + type
+     * @param any
+     * @returns {string}
+     */
+    mu.toStringWithType = function(/**{any}*/ any){
+        return _.type(any) + '__' + any;
     };
 
     return mu;

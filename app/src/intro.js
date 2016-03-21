@@ -1,6 +1,8 @@
 /**
  * mu.js
  * 类似undestore的JS方法库
+ *
+ * PS: 基本上不考虑 IE6/7
  */
 (function(window, undefined) {
     'use strict';
@@ -18,6 +20,10 @@
         TRIM: /(^\s*)|(\s*$)/g,
         TRIM_LEFT: /(^\s*)/g,
         TRIM_RIGHT: /(\s*$)/g
+    };
+
+    var C = {
+        REMOVE_MAP: '__remove_map__'
     };
 
 

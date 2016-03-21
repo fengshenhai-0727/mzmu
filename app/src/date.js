@@ -74,15 +74,7 @@ define(function(mu) {
         return short ? ( Math.floor(rst / 1000) ) : rst;
     };
 
-    /**
-     * mu.diff(Date start, Date end)
-     * 两个时间相隔
-     * @param start
-     * @param end
-     */
-    mu.diff = function(/**{date}*/ start, /**{date}*/ end){
-
-    };
+    // 时间处理 moment
 
     return mu;
 });

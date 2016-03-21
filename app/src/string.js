@@ -1,7 +1,7 @@
-define([
-    'string/trim',
-    'string/substr'
-], function(mu) {
+define(function(mu) {
+
+    var string__ = {};
+
 
     /**
      * mu.trim(String str, String position)
@@ -23,14 +23,14 @@ define([
     };
 
     /**
-     * mu.substr(String str, Int max, Int back, String chart)
+     * mu.intercept(String str, Int max, Int back, String chart)
      * @param str 需要截取的长度的字符串
      * @param max 字符串最大长度
      * @param adjust 最后显示的调整长度
      * @param symbol 跟随字符串...
      * @returns {{string}}
      */
-    mu.substr = function(/**{string}*/ str, /**{int}*/ max, /**{int}*/ adjust, /**{string}*/ symbol) {
+    mu.intercept = function(/**{string}*/ str, /**{int}*/ max, /**{int}*/ adjust, /**{string}*/ symbol) {
         adjust = adjust || 3;
         symbol = _.ifnvl(symbol, '...');
 
@@ -63,6 +63,20 @@ define([
 
         return s;
     };
+
+    /**
+     * mu.concat(String s1...)
+     * 连接字符串
+     * @param s1
+     * @returns {string|*}
+     */
+    mu.concat = function(/**{string...}*/ s1){
+        var args = _.args(arguments);
+        return args.join('');
+    };
+
+
+
 
 
     return mu;

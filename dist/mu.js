@@ -1,6 +1,8 @@
 /**
  * mu.js
  * 类似undestore的JS方法库
+ *
+ * PS: 基本上不考虑 IE6/7
  */
 (function(window, undefined) {
     'use strict';
@@ -18,6 +20,10 @@
         TRIM: /(^\s*)|(\s*$)/g,
         TRIM_LEFT: /(^\s*)/g,
         TRIM_RIGHT: /(\s*$)/g
+    };
+
+    var C = {
+        REMOVE_MAP: '__remove_map__'
     };
 
 
@@ -171,7 +177,7 @@
      * @returns {boolean}
      */
     mu.isNull = function(/**{any}*/ any){
-        return any === undefined;
+        return any === null;
     };
 
     /**
@@ -180,7 +186,7 @@
      * @returns {boolean}
      */
     mu.isUndefined = function(/**{any}*/ any){
-        return any === null;
+        return any === undefined;
     };
 
     /**
@@ -396,6 +402,11 @@
         return rst;
     };
 
+    mu.isNotEmpty = function(){
+        var args = _.args(arguments);
+        return !_.isEmpty.apply(null, args);
+    };
+
     /**
      * mu.isExist(Any any)
      * 判断对象是否存在
@@ -432,6 +443,26 @@
      */
     mu.isExist = function(/**{Any}*/ any) {
         return !(any === null || any === undefined);
+    };
+
+    mu.isNotExist = function(){
+        var args = _.args(arguments);
+        return !_.isExist.apply(null, args);
+    };
+
+    /**
+     * mu.isIf(Any any)
+     * 判断假植
+     * @param any
+     * @returns {boolean}
+     */
+    mu.isIf = function(/**{Any}*/ any){
+        return !!any;
+    };
+
+    mu.isNotIf = function(){
+        var args = _.args(arguments);
+        return !_.isIf.apply(null, args);
     };
 
     /**
@@ -610,10 +641,22 @@
      * mu.args(Arguments args)
      * 将 Arguments 转为一个数组
      * @param args
+     * @param expand
      * @returns {Array.<T>}
      */
-    mu.args = function(/**Arguments*/args) {
-        return Array.prototype.slice.call(args, 0);
+    mu.args = function(/**Arguments*/args, /**{boolean}*/ expand, /**{int}*/ argslenth  ) {
+        args = Array.prototype.slice.call(args, 0);
+
+        if(expand){
+            _.each(args, function(v, i){
+                args['__' + i + '__'] = {
+                    type: _.type(v),
+                    val: v
+                };
+            });
+        }
+
+        return args;
     };
 
     /**
@@ -713,6 +756,16 @@
         }
 
         return true;
+    };
+
+    /**
+     * mu.toStringWithType(Any any)
+     * toString + type
+     * @param any
+     * @returns {string}
+     */
+    mu.toStringWithType = function(/**{any}*/ any){
+        return _.type(any) + '__' + any;
     };
 
 
@@ -876,7 +929,7 @@
         _.each(obj, function(v, k) {
             var cb = fn.call(context, v, k, obj);
 
-            if(cb !== '__remove_map__') {
+            if(cb !== C.REMOVE_MAP) {
                 if(_.isObject(rst)) {
                     if(cb && cb.__key__) {
                         rst[cb.__key__] = cb.__val__;
@@ -972,6 +1025,177 @@
 
 
 
+    var array__ = {};
+
+    /**
+     * array__.intercept(Array arr, Int n[, Int start, Function fn])
+     * 截取数组的一段数据组成新的数组
+     * @param arr
+     * @param n
+     * @param start
+     * @param fn
+     * @returns {*}
+     */
+    array__.intercept = function(/**{array}*/ arr, /**{int}*/ n, /**{int}*/ start, /**{function}*/ fn) {
+        var rst;
+
+        var args = _.args(arguments, true);
+
+        if(args.__2__ && args.__2__.type !== 'number') {
+            fn = start;
+            start = 0;
+        }
+
+        start = start || 0;
+
+        if(n) {
+            rst = arr.slice(start, start + n);
+        } else {
+            rst = arr.shift();
+        }
+
+        return fn ? fn.call(null, rst, arr) : rst;
+    };
+
+    /**
+     * mu.first(Array arr[, Int n, Function fn]
+     * 获取数组前n个元素
+     * @param arr
+     * @param n 获取数组的个数
+     * @param fn(first, l, arr)
+     * @returns {*}
+     *
+     * exp.
+     *
+     * mu.first(['a', 'b', 'c', 'd'])
+     * // -> 'a'
+     *
+     * mu.first(['a', 'b', 'c', 'd'], 1)
+     * // -> ['a']
+     *
+     * mu.first(['a', 'b', 'c', 'd'], 2, function(arr){
+     *     return mu.map(arr, function(v){
+     *         return v + '__';
+     *     });
+     * })
+     * // -> ['a__', 'b__']
+     *
+     */
+    mu.first = function(/**{array}*/ arr, /**{int}*/ n, /**{function}*/ fn) {
+        return array__.pick(arr, n, fn);
+    };
+
+    /**
+     * mu.last(Array arr, Int n, Function fn)
+     * 或许数组的后N个元素
+     * @param arr
+     * @param n
+     * @param fn
+     * @returns {*}
+     */
+    mu.last = function(/**{array}*/ arr, /**{int}*/ n, /**{function}*/ fn) {
+        var rst;
+
+        if(n) {
+            rst = arr.slice(-n);
+        } else {
+            rst = arr[arr.length - 1];
+        }
+
+        return fn ? fn.call(null, rst, arr) : rst;
+    };
+
+    /**
+     * mu.delete(Array arr, Int i)
+     * @param arr
+     * @param i
+     * @returns {{array}}
+     */
+    mu.delete = function(/**{array}*/ arr, /**{int}*/ i) {
+        delete arr[i];
+        return arr;
+    };
+
+    /**
+     * mu.unique(Array arr)
+     * 数组去重
+     * @param arr
+     */
+    mu.unique = function(/**{array}*/ arr) {
+        var obj = _.map(arr, function(v, i) {
+            return {
+                '__key__': _.toStringWithType(v),
+                '__val__': i
+            };
+        }, {});
+
+        return _.map(obj, function(v) {
+            return arr[v];
+        }, []);
+    };
+
+    /**
+     * mu.clean(Array arr, Int level)
+     * @param arr
+     * @param level
+     *      1 -> 清理 undefined
+     *      2 -> 清理 undefined, null
+     *      3 -> 清理 假值
+     *      4 -> 清理 空值
+     */
+    mu.clean = function(/**{array)*/ arr, /**int*/ level) {
+        level = level || 1;
+
+        var fn = {
+            1: _.isUndefined,
+            2: _.isNotExist,
+            3: _.isIf,
+            4:_.isEmpty
+        };
+
+        return _.map(arr, function(v){
+            if(fn[level](v)){
+                return C.REMOVE_MAP;
+            }else{
+                return v;
+            }
+        });
+    };
+
+    /**
+     * mu.insert(Array arr, Any any, Int index);
+     * 在数组插入指定位置(index)
+     * @param arr
+     * @param val
+     * @param index
+     * @returns {{array}}
+     */
+    mu.insert = function(/**{array}*/ arr, /**{any}*/ val, /**{int}*/ index){
+        var l = arr.length;
+        index = index > l ? l : index < 0 ? 0 : index || 0;
+        arr.splice(index, 0, val);
+        return arr;
+    };
+
+    /**
+     * mu.indexOf(Array array, Any item)
+     * 查找 item 所在数组的位置(index 索引值), 若不存在则为 -1;
+     * @param arr
+     * @param item
+     * @returns {{int}}
+     */
+    mu.indexOf = function(/**{array}*/ arr, /**{any}*/ item){
+        item = _.toStringWithType(item);
+        var index = -1;
+        _.each(arr, function(v, i){
+            if(item === _.toStringWithType(v)){
+                index = i;
+                return false;
+            }
+        });
+
+        return index;
+    };
 
 
 
@@ -979,12 +1203,7 @@
 
 
 
-
-
-
-
-
-
+    var string__ = {};
 
 
     /**
@@ -1007,14 +1226,14 @@
     };
 
     /**
-     * mu.substr(String str, Int max, Int back, String chart)
+     * mu.intercept(String str, Int max, Int back, String chart)
      * @param str 需要截取的长度的字符串
      * @param max 字符串最大长度
      * @param adjust 最后显示的调整长度
      * @param symbol 跟随字符串...
      * @returns {{string}}
      */
-    mu.substr = function(/**{string}*/ str, /**{int}*/ max, /**{int}*/ adjust, /**{string}*/ symbol) {
+    mu.intercept = function(/**{string}*/ str, /**{int}*/ max, /**{int}*/ adjust, /**{string}*/ symbol) {
         adjust = adjust || 3;
         symbol = _.ifnvl(symbol, '...');
 
@@ -1047,6 +1266,17 @@
 
         return s;
     };
+
+    /**
+     * mu.concat(String s1...)
+     * 连接字符串
+     * @param s1
+     * @returns {string|*}
+     */
+    mu.concat = function(/**{string...}*/ s1){
+        var args = _.args(arguments);
+        return args.join('');
+    };
 /**
  * 时间
  */
@@ -1072,17 +1302,29 @@
      *
      * exp.
      *
-     * mu.timestamp(new Date(1458207651074))
-     * //-> 1458207651074
+     * mu.timestamp(new Date(1458207651074), 'hhssSS')
+     * // -> 1458146400000
      *
-     * mu.timestamp(new Date(1458207651074), 0)
-     * //-> 1458207651074
+     * mu.timestamp(new Date(1458207651074), 'SS')
+     * // -> 1458207651000
      *
-     * mu.timestamp(new Date(1458207651074), 1)
-     * //-> 1458207651000
+     * mu.timestamp(new Date(1458207651074), 'ssSS')
+     * // -> 1458207600000
      *
-     * mu.timestamp(new Date(1458207651074), 2)
-     * //-> 1458207651
+     * mu.timestamp(new Date(1458207651074), 'mmssSS')
+     * // -> 1458205200000
+     *
+     * mu.timestamp(new Date(1458207651074), 'hhmmssSS')
+     * // -> 1458144000000
+     *
+     * mu.timestamp(new Date(1458207651074), 'ddhhmmssSS')
+     * // -> 1456675200000
+     *
+     * mu.timestamp(new Date(1458207651074), 'MMddhhmmssSS')
+     * // -> 1451491200000
+     *
+     * mu.timestamp(new Date(1458207651074), 'yyyyMMddhhmmssSS')
+     * // -> -62167334400000
      *
      */
     mu.timestamp = function(/**{date}*/ date, /**[{string}]*/ initType, /**[boolean]*/ short) {
@@ -1111,15 +1353,7 @@
         return short ? ( Math.floor(rst / 1000) ) : rst;
     };
 
-    /**
-     * mu.diff(Date start, Date end)
-     * 两个时间相隔
-     * @param start
-     * @param end
-     */
-    mu.diff = function(/**{date}*/ start, /**{date}*/ end){
-
-    };
+    // 时间处理 moment
 
 
     /**

@@ -17,7 +17,7 @@ define(['./type'], function(mu, _) {
      * @returns {boolean}
      */
     mu.isNull = function(/**{any}*/ any){
-        return any === undefined;
+        return any === null;
     };
 
     /**
@@ -26,7 +26,7 @@ define(['./type'], function(mu, _) {
      * @returns {boolean}
      */
     mu.isUndefined = function(/**{any}*/ any){
-        return any === null;
+        return any === undefined;
     };
 
     /**
@@ -242,6 +242,11 @@ define(['./type'], function(mu, _) {
         return rst;
     };
 
+    mu.isNotEmpty = function(){
+        var args = _.args(arguments);
+        return !_.isEmpty.apply(null, args);
+    };
+
     /**
      * mu.isExist(Any any)
      * 判断对象是否存在
@@ -278,6 +283,26 @@ define(['./type'], function(mu, _) {
      */
     mu.isExist = function(/**{Any}*/ any) {
         return !(any === null || any === undefined);
+    };
+
+    mu.isNotExist = function(){
+        var args = _.args(arguments);
+        return !_.isExist.apply(null, args);
+    };
+
+    /**
+     * mu.isIf(Any any)
+     * 判断假植
+     * @param any
+     * @returns {boolean}
+     */
+    mu.isIf = function(/**{Any}*/ any){
+        return !!any;
+    };
+
+    mu.isNotIf = function(){
+        var args = _.args(arguments);
+        return !_.isIf.apply(null, args);
     };
 
     /**
