@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "homepage": "www.mizi.club",
-  "private": true,
+  
   "ignore": [
     "**/.*",
     "node_modules",
