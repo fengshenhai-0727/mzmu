@@ -1,6 +1,7 @@
 define([
     'base',
     'array',
+    'collection',
     'string',
     'date',
     'utility',

@@ -1,10 +1,4 @@
 define([
-    'utility/format'
-], function(mu) {
-
-
-
-
-
-    return mu;
-});
+    'utility/format',
+    'utility/storage'
+]);

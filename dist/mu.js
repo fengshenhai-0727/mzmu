@@ -1201,6 +1201,48 @@
 
 
 
+/**
+ * 集合
+ */
+
+
+	/**
+	 * mu.remove(Collection src, Any item)
+	 * 删除集合中的某一项
+	 * @param  item
+	 * @return {collection}
+	 *
+	 * exp.
+	 *
+	 * mu.remove({a:1, b:2, c:3, d:4, e:5}, function(v, k){
+	 *	    return v % 2 === 0
+	 *	})
+	 * // -> {a: 1, c: 3, e: 5}
+	 *
+	 * mu.remove([1,2,3,4,5], function(v, k){
+	 *     	return v % 2 === 0
+	 * })
+	 * // ->[1, 3, 5]
+	 * 
+	 */
+	mu.remove = function(/**{collection}*/ src, /**{any}*/ item){
+
+		if(_.isFunction(item)){
+			_.each(src, function(v, k){
+				if(item.call(null, v, k, src)){
+					src = _.remove(src, k);
+				}	
+			});
+		}else{
+			if(_.isArray(src) && _.isNumeric(item)){
+				src.splice(item, 1);
+			}else{
+				delete src[item];
+			}
+		}
+
+		return src;
+	};
 
 
     var string__ = {};
@@ -1448,6 +1490,32 @@
             // 将数字转为科学计数法, 输出字符串
             case 'number':
                 return numfomart(src + '');
+        }
+    };
+
+	/**
+	 * mu.storage(String key, Any val)
+	 * localStorage 简化操作
+	 * @param  {[type]} val [description]
+	 * @return {[type]}     [description]
+	 */
+    mu.storage = function( /**{string}*/ key, /**{any}*/ val) {
+        var rst;
+        if (arguments.length === 1) {
+            rst = localStorage.getItem(key);
+            if (_.type(rst, 'string')) {
+                try {
+                    return JSON.parse(rst);
+                } catch (e) {
+                    return rst || undefined;
+                }
+            }else{
+            	return undefined;
+            }
+        } else {
+            rst = JSON.stringify(val);
+            rst = rst.replace(/^\"(.*)\"$/, '$1');
+            localStorage.setItem(key, rst);
         }
     };
 
