@@ -52,17 +52,13 @@ define(function(mu) {
      * @returns {{string}}
      */
     mu.leftpad = function(/**{string}*/ s, /**{int}*/ l, /**[string]*/ symbol){
-        s = s + '';
         symbol = symbol || '0';
-
         s = String(s);
-
-        while(s.length<l){
+        while(s.length < Math.abs(l)){
             s = symbol + s;
         }
-
         return s;
-    };
+    }; 
 
     /**
      * mu.concat(String s1...)
