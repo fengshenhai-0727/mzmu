@@ -118,6 +118,18 @@
         return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
+    /**
+     * mu.injector(Function fn[, Any any...])
+     * 闭包的又一种写法, 向方法中注入参数
+     * @params any
+     * @return {any} 
+     */
+    mu.injector = function(/**{fn}*/ fn, /**{any...}*/ any){
+        var args = _.args(arguments);
+        fn = args.shift();
+        return fn.apply(null, args);
+    };
+
 
 
 
@@ -760,9 +772,18 @@
 
     /**
      * mu.toStringWithType(Any any)
+     * 黑方法，加上类型值得 toString
      * toString + type
      * @param any
      * @returns {string}
+     *
+     * exp. 
+     *
+     * mu.toStringWithType(1)
+     * // -> 'number_1'
+     *
+     * mu.toStringWithType(1)
+     * // -> 'string_1'
      */
     mu.toStringWithType = function(/**{any}*/ any){
         return _.type(any) + '__' + any;
@@ -1082,7 +1103,7 @@
      *
      */
     mu.first = function(/**{array}*/ arr, /**{int}*/ n, /**{function}*/ fn) {
-        return array__.pick(arr, n, fn);
+        return array__.intercept(arr, n, fn);
     };
 
     /**
@@ -1350,11 +1371,11 @@
     mu.leftpad = function(/**{string}*/ s, /**{int}*/ l, /**[string]*/ symbol){
         symbol = symbol || '0';
         s = String(s);
-        while(s.length< Math.abs(l)){
+        while(s.length < Math.abs(l)){
             s = symbol + s;
         }
         return s;
-    };
+    }; 
 
     /**
      * mu.concat(String s1...)
