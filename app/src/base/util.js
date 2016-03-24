@@ -127,9 +127,18 @@ define(function(mu) {
 
     /**
      * mu.toStringWithType(Any any)
+     * 黑方法，加上类型值得 toString
      * toString + type
      * @param any
      * @returns {string}
+     *
+     * exp. 
+     *
+     * mu.toStringWithType(1)
+     * // -> 'number_1'
+     *
+     * mu.toStringWithType(1)
+     * // -> 'string_1'
      */
     mu.toStringWithType = function(/**{any}*/ any){
         return _.type(any) + '__' + any;

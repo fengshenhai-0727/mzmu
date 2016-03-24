@@ -61,7 +61,7 @@ define(function(mu) {
      *
      */
     mu.first = function(/**{array}*/ arr, /**{int}*/ n, /**{function}*/ fn) {
-        return array__.pick(arr, n, fn);
+        return array__.intercept(arr, n, fn);
     };
 
     /**

@@ -64,6 +64,18 @@ define(function(mu, _){
         return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
+    /**
+     * mu.injector(Function fn[, Any any...])
+     * 闭包的又一种写法, 向方法中注入参数
+     * @params any
+     * @return {any} 
+     */
+    mu.injector = function(/**{fn}*/ fn, /**{any...}*/ any){
+        var args = _.args(arguments);
+        fn = args.shift();
+        return fn.apply(null, args);
+    };
+
 
 
 
