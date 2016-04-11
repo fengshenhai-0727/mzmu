@@ -5,15 +5,19 @@
  * PS: 基本上不考虑 IE6/7
  */
 (function(window, undefined) {
-    'use strict';
+   // 'use strict';
 
     // 创建闭包全局
     var root = this;
     var mu, _;
 
     var arrPro = Array.prototype,
-        objPro = Object.prototype;
+        objPro = Object.prototype,
+        fnPro = Function.prototype;
 
+
+    var slice = arrPro.slice,
+        hasOwnProperty = objPro.hasOwnProperty;
 
     var REG = {
         CHINESE: /^([u4E00-u9FA5]|[uFE30-uFFA0])*$/g,

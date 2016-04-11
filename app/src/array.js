@@ -18,7 +18,7 @@ define(function(mu) {
     array__.intercept = function(/**{array}*/ arr, /**{int}*/ n, /**{int}*/ start, /**{function}*/ fn) {
         var rst;
 
-        var args = _.args(arguments, true);
+        var args = _.args(true, arguments);
 
         if(args.__2__ && args.__2__.type !== 'number') {
             fn = start;
@@ -175,6 +175,11 @@ define(function(mu) {
 
         return index;
     };
+
+
+
+
+
 
 
 

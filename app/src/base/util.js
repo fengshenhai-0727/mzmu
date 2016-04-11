@@ -9,10 +9,32 @@ define(function(mu) {
      * 将 Arguments 转为一个数组
      * @param args
      * @param expand
+     * @param start
      * @returns {Array.<T>}
+     *
+     * exp.
+     *
+     * var fn = function(){
+     *     console.debug('args1:::->', mu.args(arguments));
+     *     console.debug('args2:::->', mu.args(arguments,2));
+     *     console.debug('args3:::->', mu.args(true, arguments,2));
+     * }
+     *
+     * // -> args1:::-> [1, 2, 3, 4]
+     * // -> args2:::->  [3, 4]
+     * // -> args3:::-> [3, 4, __0__: Object, __1__: Object]
      */
-    mu.args = function(/**Arguments*/args, /**{boolean}*/ expand, /**{int}*/ argslenth  ) {
-        args = Array.prototype.slice.call(args, 0);
+    mu.args = function(/**{boolean}*/ expand, /**{arguments}*/ args, /**{int}*/ start){
+
+        if(_.type(arguments[0], 'boolean')){
+            expand = arguments[0];
+        }else{
+            args = arguments[0];
+            start = arguments[1];
+            expand = false;
+        }
+
+        args = slice.call(args, start || 0);
 
         if(expand){
             _.each(args, function(v, i){
@@ -121,7 +143,6 @@ define(function(mu) {
                 return false;
             }
         }
-
         return true;
     };
 

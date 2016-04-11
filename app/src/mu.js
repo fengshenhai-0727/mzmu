@@ -1,6 +1,7 @@
 define([
     'base',
     'array',
+    'object',
     'collection',
     'function',
     'string',
@@ -8,3 +9,4 @@ define([
     'utility',
     'dom'
 ]);
+

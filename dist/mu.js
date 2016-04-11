@@ -5,15 +5,19 @@
  * PS: 基本上不考虑 IE6/7
  */
 (function(window, undefined) {
-    'use strict';
+   // 'use strict';
 
     // 创建闭包全局
     var root = this;
     var mu, _;
 
     var arrPro = Array.prototype,
-        objPro = Object.prototype;
+        objPro = Object.prototype,
+        fnPro = Function.prototype;
 
+
+    var slice = arrPro.slice,
+        hasOwnProperty = objPro.hasOwnProperty;
 
     var REG = {
         CHINESE: /^([u4E00-u9FA5]|[uFE30-uFFA0])*$/g,
@@ -105,6 +109,18 @@
     };
 
     /**
+     * mu.if(Any con, Function inbox, Function outbox)
+     * @param con: con not function
+     * @param inbox
+     * @param outbox
+     * @returns {*}
+     */
+    mu.if = function(con, inbox, outbox){
+        return con ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+    };
+
+
+    /**
      * mu.exist
      * 如果con 存在 -> inbox ::else outbox
      * @param {any} con : not function
@@ -113,9 +129,7 @@
      * @returns {*}
      */
     mu.exist = function(con, inbox, outbox) {
-        var b = _.isExist(con);
-        var p = typeof con === 'function' ? b : con;
-        return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+        return _.isExist(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
     /**
@@ -654,10 +668,32 @@
      * 将 Arguments 转为一个数组
      * @param args
      * @param expand
+     * @param start
      * @returns {Array.<T>}
+     *
+     * exp.
+     *
+     * var fn = function(){
+     *     console.debug('args1:::->', mu.args(arguments));
+     *     console.debug('args2:::->', mu.args(arguments,2));
+     *     console.debug('args3:::->', mu.args(true, arguments,2));
+     * }
+     *
+     * // -> args1:::-> [1, 2, 3, 4]
+     * // -> args2:::->  [3, 4]
+     * // -> args3:::-> [3, 4, __0__: Object, __1__: Object]
      */
-    mu.args = function(/**Arguments*/args, /**{boolean}*/ expand, /**{int}*/ argslenth  ) {
-        args = Array.prototype.slice.call(args, 0);
+    mu.args = function(/**{boolean}*/ expand, /**{arguments}*/ args, /**{int}*/ start){
+
+        if(_.type(arguments[0], 'boolean')){
+            expand = arguments[0];
+        }else{
+            args = arguments[0];
+            start = arguments[1];
+            expand = false;
+        }
+
+        args = slice.call(args, start || 0);
 
         if(expand){
             _.each(args, function(v, i){
@@ -766,7 +802,6 @@
                 return false;
             }
         }
-
         return true;
     };
 
@@ -880,6 +915,10 @@
                 break;
             case 'object':
 
+                // 兼容IE9 以下, 不能枚举的属性手动重定义的元素 propertyIsEnumerable 不能判断
+                // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
+                // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
+                // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
                 for(i in any) {
                     if(any.hasOwnProperty(i)) {
                         if(fn.call(context, any[i], i, any) === false) {
@@ -887,6 +926,8 @@
                         }
                     }
                 }
+
+
 
                 break;
         }
@@ -1060,7 +1101,7 @@
     array__.intercept = function(/**{array}*/ arr, /**{int}*/ n, /**{int}*/ start, /**{function}*/ fn) {
         var rst;
 
-        var args = _.args(arguments, true);
+        var args = _.args(true, arguments);
 
         if(args.__2__ && args.__2__.type !== 'number') {
             fn = start;
@@ -1222,48 +1263,318 @@
 
 
 
+
+
+
+
+
+
+
+    /**
+     * mu.keys(Object obj)
+     * 返回该对象的所有可枚举自身属性的属性名
+     * @param obj
+     * @returns {Array}
+     */
+    mu.keys = function(/**{object}*/ obj) {
+        return _.if(Object.keys, function(keys) {
+            return keys(obj);
+        }, function() {
+
+            // 不考虑 propertyIsEnumerable 不能枚举的情况
+            // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+            //  方法 一
+            //  if (!Object.keys) Object.keys = function(o) {
+            //      if (o !== Object(o))
+            //          throw new TypeError('Object.keys called on a non-object');
+            //      var k=[],p;
+            //      for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
+            //      return k;
+            //  }
+            //
+            //
+            //  方法 二, 考虑propertyIsEnumerable, IE9以下问题
+            //  Object.keys = (function () {
+            //      var hasOwnProperty = Object.prototype.hasOwnProperty,
+            //          hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+            //          dontEnums = [
+            //              'toString',
+            //              'toLocaleString',
+            //              'valueOf',
+            //              'hasOwnProperty',
+            //              'isPrototypeOf',
+            //              'propertyIsEnumerable',
+            //              'constructor'
+            //          ],
+            //          dontEnumsLength = dontEnums.length;
+            //
+            //      return function (obj) {
+            //          if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object');
+            //
+            //          var result = [];
+            //
+            //          for (var prop in obj) {
+            //              if (hasOwnProperty.call(obj, prop)) result.push(prop);
+            //          }
+            //
+            //          if (hasDontEnumBug) {
+            //              for (var i=0; i < dontEnumsLength; i++) {
+            //                  if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i]);
+            //              }
+            //          }
+            //          return result;
+            //      }
+            //  })()
+
+            return _.map(obj, function(key){
+                return key;
+            }, []);
+        });
+    };
+
+    /**
+     * mu.vals(Object obj)
+     * 返回该对象的所有可枚举自身属性的值
+     * @param obj
+     * @returns {Array}
+     */
+    mu.vals = function(/**{object}*/ obj){
+        return _.map(obj, function(key, val){
+            return val;
+        }, []);
+    };
 /**
  * 集合
  */
 
 
-	/**
-	 * mu.remove(Collection src, Any item)
-	 * 删除集合中的某一项
-	 * @param  item
-	 * @return {collection}
-	 *
-	 * exp.
-	 *
-	 * mu.remove({a:1, b:2, c:3, d:4, e:5}, function(v, k){
+    /**
+     * mu.remove(Collection src, Any item)
+     * 删除集合中的某一项
+     * @param  src
+     * @param  item
+     * @return {Object|Array}
+     *
+     * exp.
+     *
+     * mu.remove({a:1, b:2, c:3, d:4, e:5}, function(v, k){
 	 *	    return v % 2 === 0
 	 *	})
-	 * // -> {a: 1, c: 3, e: 5}
-	 *
-	 * mu.remove([1,2,3,4,5], function(v, k){
+     * // -> {a: 1, c: 3, e: 5}
+     *
+     * mu.remove([1,2,3,4,5], function(v, k){
 	 *     	return v % 2 === 0
 	 * })
-	 * // ->[1, 3, 5]
-	 * 
-	 */
-	mu.remove = function(/**{collection}*/ src, /**{any}*/ item){
+     * // ->[1, 3, 5]
+     *
+     */
+    mu.remove = function(/**{collection}*/ src, /**{any}*/ item) {
 
-		if(_.isFunction(item)){
-			_.each(src, function(v, k){
-				if(item.call(null, v, k, src)){
-					src = _.remove(src, k);
-				}	
-			});
-		}else{
-			if(_.isArray(src) && _.isNumeric(item)){
-				src.splice(item, 1);
-			}else{
-				delete src[item];
-			}
-		}
+        if(_.isFunction(item)) {
+            _.each(src, function(v, k) {
+                if(item.call(null, v, k, src)) {
+                    src = _.remove(src, k);
+                }
+            });
+        } else {
+            if(_.isArray(src) && _.isNumeric(item)) {
+                src.splice(item, 1);
+            } else {
+                delete src[item];
+            }
+        }
 
-		return src;
-	};
+        return src;
+    };
+
+    /**
+     * mu.len(Collection obj)
+     * 返回对象的长度(或属性的个数)
+     * @param obj
+     * @returns {int}
+     */
+    mu.len = function(/**{collection}*/ obj) {
+        if(_.isObject(obj)) {
+            return _.keys(obj).length;
+        }
+
+        if(_.isArray(obj) || _.isFunction(obj)) {
+            return obj.length;
+        }
+
+        return String(obj).length;
+    };
+
+    /**
+     * mu.flat(Object obj)
+     * 扁平化呈现数据
+     * @param obj
+     * @returns {object}
+     *
+     * exp.
+     *
+     * mu.flag(['a', 'b', {'c':1}])
+     * // -> {[0]: "a", [1]: "b", [2].c: 1}
+     *
+     * mu.flat({
+     *     "data": {
+     *         "containerId": 47,
+     *         "containerKey": "TM-ZP9KRX",
+     *         "containerName": "test 1.4.2",
+     *         "createUserId": "10003",
+     *         "updateUserId": "10003"
+     *     }
+     * })
+     *
+     * // -> {
+     *      data.containerId: 47,
+     *      data.containerKey: "TM-ZP9KRX",
+     *      data.containerName: "test 1.4.2",
+     *      data.createUserId: "10003",
+     *      data.updateUserId: "10003"
+     *  }
+     *
+     */
+    mu.flat = mu.chainToFlat = function(/**{collection}*/ obj) {
+
+        var arrKey = function(index) {
+            return '[' + index + ']';
+        };
+
+        var rst = {};
+
+        _.each(obj, function(v, k, obj) {
+            var key = _.isArray(obj) ? arrKey(k) : k;
+            if(typeof v === 'object') {
+                _.each(_.flat(v), function(vv, kk) {
+                    rst[key + '.' + kk] = vv;
+                });
+            } else {
+                rst[key] = v;
+            }
+        });
+
+        return rst;
+    };
+
+    /**
+     * mu.flatToCharin(Object obj)
+     * 将扁平化对象转为链型对象
+     * @params obj
+     */
+    mu.flatToChain = function(/**{object}*/ obj) {
+        var reg = /^[(\d+)]$/g;
+        var rst = {};
+
+        var setVal = function(key, i, l, v) {
+
+
+            var isArray = reg.test(key);
+            if(isArray) {
+                key = reg.exec(key)[1];
+                if(!_.isArray(rst)) {
+                    rst = [];
+                }
+            }
+
+            rst[key] = {};
+
+            if(i === l) {
+                rst[key] = v;
+            }
+        };
+
+        _.each(obj, function(val, prop) {
+            var part = prop.split('.');
+            var l = part.length;
+            _.each(part, function(key, i) {
+
+                setVal(key, i, l);
+            });
+        });
+
+        return rst;
+    };
+
+    /**
+     * mu.find()
+     * 查找集合中中符合条件的第一项
+     * @param collect
+     * @param fn
+     * @returns {*}
+     */
+    mu.find = function(/**{collection}*/ collect, /**{any}*/ fn) {
+        var rst;
+
+        _.each(collect, function(v, i, src) {
+            if(fn.call(null, v, i, src)) {
+                rst = v;
+                return false;
+            }
+        });
+
+        return rst;
+    };
+
+    /**
+     * mu.find()
+     * 查找数组中符合条件的第一项的索引值
+     * @param arr
+     * @param fn
+     * @returns {*}
+     */
+    mu.findIndex = function(/**{array}*/ arr, /**{any}*/ fn) {
+        var rst;
+
+        mu.run(!_.isFunction(fn), function() {
+            var val = fn;
+            fn = function(v) {
+                return val === v;
+            };
+        });
+
+        _.each(arr, function(v, i, src) {
+            if(fn.call(null, v, i, src)) {
+                rst = i;
+                return false;
+            }
+        });
+
+        return rst;
+    };
+
+    mu.query = function() {
+
+    };
+
+    mu.queryIndex = function() {
+
+    };
+
+    mu.prop = function(/**Object*/ collect, /**String*/ propStr) {
+
+        var args = _.args(arguments), keys;
+        var rst = collect || window;
+
+        if(args.length > 2){
+            keys = args.slice(1);
+        }else{
+            keys = propStr.split('.');
+        }
+
+        for(var i = 0, key; (key = keys[i++]);) {
+            if(!_.isExist(rst[key]) || !rst.hasOwnProperty(key)) {
+                return;
+            }
+
+            rst = rst[key];
+        }
+
+        return rst;
+    };
+
+
+    // mu.get
 
 
 
@@ -1271,21 +1582,87 @@
     // mu.defer
     // mu.throttle
 
+    /**
+     * mu.bind(Function fn, Object context, Any any...)
+     * 固定fn函数的作用域为context, 不管函数是否变为构造函数或重新赋值,改变作用域
+     * @param fn
+     * @param context
+     * @param any
+     */
+    mu.bind = function(/**{function}*/ fn, /**{object}*/ context, /**{any...}*/ any) {
+        var nativeBind = fnPro.bind, args = _.args(arguments);
+        fn = args.shift();
+        return _.run(nativeBind && nativeBind === fn.bind, function(){
+            return nativeBind.apply(fn, args);
+        }, function(){
+            context = args.shift();
 
-    mu.bind = function(/**{function}*/ fn, /**{object}*/ context, /**{any...}*/ any ){
-    	
+            var bound =  function(){
+                // 绑定参数传递
+                args = args.concat(_.args(arguments));
+
+                // 普通function绑定
+                if(!(this instanceof  bound)){
+                    return fn.apply(context, args);
+                }
+
+                var Ctor = _.noop();
+                Ctor.prototype = fn.prototype;
+                var self = new Ctor();
+                Ctor.prototype = null;
+                var result = fn.apply(self, args);
+                if (_.isObject(result)) return result;
+                return self;
+            };
+
+            return bound;
+
+        });
+    };
+
+    /**
+     * mu.bindAll(Object obj[, String keys])
+     * 给对象的方法固定作用域
+     * @param obj
+     * @param keys: if keys == null then keys = Object.keys(keys)
+     * @returns {{object}}
+     */
+    mu.bindAll = function(/**{object}*/ obj, /**{string...}*/ keys){
+        var args = _.isUndefined(keys) ? _.keys(obj) : _.args(keys, 1);
+        _.each(args, function(k){
+            _.run(obj[k], function(fn){
+                if(_.isFunction(fn)){
+                    obj[k] = _.bind(fn, obj);
+                }
+            });
+        });
+
+        return obj;
     };
 
 
     /**
      * mu.debounce(Function fn, Int wait[, Boolean immediate])
      * 弹簧函数
-     * @param  immediate 决定函数实在弹簧顶部执行还是底部执行 
+     * @param fn
+     * @param wait
+     * @param  immediate 决定函数实在弹簧顶部执行还是底部执行
      *         immediate == true 函数立即执行，在弹簧时间内不再执行 (用户双击重复)
      *         immediate == false 在最后一次调用后 wait 时间后执行 （等待执行（懒加载等））
      * @return {function}
+     *
+     * exp.
+     *
+     * var b = mu.debounce(fn, 300);
+     * // -> 弹簧底部: 若在间隔时间 300ms 内一直执行 b(), 那么函数 fn 一直不会被触发
+     *
+     * var a = mu.debounce(fn, 300, true)
+     * // -> 弹簧顶部: 执行 a(), 函数 fn 立即被触发, 但在 间隔时间 300ms 内再次执行 a(), 则函数fn不再被触发
+     *
      */
-    mu.debounce = function( /**{function}*/ fn, /**{int}*/ wait, /**{boolean}*/ immediate) {
+
+
+    mu.debounce = function(/**{function}*/ fn, /**{int}*/ wait, /**{boolean}*/ immediate) {
         var timeout, rst;
         wait = Math.abs(wait);
         return function() {
@@ -1294,23 +1671,23 @@
 
             var later = function() {
                 timeout = null;
-                if (!immediate){
-                	run();
-                } 
+                if(!immediate) {
+                    run();
+                }
             };
 
-            var run = function(){
-        		rst = fn.apply(context, args);
-            	context = null;
-            	args = null;
+            var run = function() {
+                rst = fn.apply(context, args);
+                context = null;
+                args = null;
             };
 
             var isImmediate = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
-            if (isImmediate){
-            	run();
-            } 
+            if(isImmediate) {
+                run();
+            }
 
             return rst;
         };

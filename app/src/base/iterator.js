@@ -36,6 +36,10 @@ define([], function(mu) {
                 break;
             case 'object':
 
+                // 兼容IE9 以下, 不能枚举的属性手动重定义的元素 propertyIsEnumerable 不能判断
+                // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
+                // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
+                // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
                 for(i in any) {
                     if(any.hasOwnProperty(i)) {
                         if(fn.call(context, any[i], i, any) === false) {
@@ -43,6 +47,8 @@ define([], function(mu) {
                         }
                     }
                 }
+
+
 
                 break;
         }

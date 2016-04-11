@@ -51,6 +51,18 @@ define(function(mu, _){
     };
 
     /**
+     * mu.if(Any con, Function inbox, Function outbox)
+     * @param con: con not function
+     * @param inbox
+     * @param outbox
+     * @returns {*}
+     */
+    mu.if = function(con, inbox, outbox){
+        return con ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+    };
+
+
+    /**
      * mu.exist
      * 如果con 存在 -> inbox ::else outbox
      * @param {any} con : not function
@@ -59,9 +71,7 @@ define(function(mu, _){
      * @returns {*}
      */
     mu.exist = function(con, inbox, outbox) {
-        var b = _.isExist(con);
-        var p = typeof con === 'function' ? b : con;
-        return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+        return _.isExist(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
     /**
