@@ -104,7 +104,6 @@
             return b;
         }
 
-        var p = typeof con === 'function' ? b : con;
         return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -130,6 +129,18 @@
      */
     mu.exist = function(con, inbox, outbox) {
         return _.isExist(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+    };
+
+    /**
+     * mu.empty
+     * 如果con 为空 -> inbox ::else outbox
+     * @param {any} con : not function
+     * @param {any} inbox
+     * @param {any} outbox
+     * @returns {*}
+     */
+    mu.empty = function(con, inbox, outbox){
+        return _.isEmpty(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
     /**
@@ -395,6 +406,12 @@
      * mu.isEmpty(0)
      * //-> true
      *
+     * mu.isEmpty('0')
+     * //-> true
+     *
+     * mu.isEmpty('00')
+     * //-> false !!! 
+     *
      * mu.isEmpty(false)
      * //-> true
      *
@@ -411,7 +428,8 @@
         if(!rst) {
             switch(_.type(any)) {
                 case 'string':
-                    rst = any.replace(/(^\s*)|(\s*$)/g, '').length === 0;
+                    var s = any.replace(/(^\s*)|(\s*$)/g, '');
+                    rst = s.length === 0 || s === '0';
                     break;
                 case 'array':
                     rst = any.length === 0;
@@ -1693,6 +1711,30 @@
         };
     };
 
+    // mu.once
+
+
+    /**
+     * mu.after(Int n, Function fn[, Object scope])
+     * fn 运行 n 次后生效
+     * @param n
+     * @param fn
+     * @param scope
+     * @returns {Function}
+     */
+    mu.after = function(/**Int*/ n, /**Function*/ fn, /**Object*/ context){
+
+        if (!_.isFunction(fn)) {
+            throw new TypeError();
+        }
+
+        return function() {
+            if (--n < 1) {
+                return fn.apply(context, arguments);
+            }
+        };
+    };
+
 
     var string__ = {};
 
@@ -1770,13 +1812,13 @@
 
 
 
-    /**
+     /**
      * mu.now()
      * 当前时间
      * @returns {Date}
      */
-    mu.now = function() {
-        return new Date();
+    mu.now = function(/**Boolean*/ timestamp) {
+        return timestamp ? + new Date() : new Date();
     };
 
     /**
@@ -1816,6 +1858,8 @@
      */
     mu.timestamp = function(/**{date}*/ date, /**[{string}]*/ initType, /**[boolean]*/ short) {
         date = date || new Date();
+
+        date = _.type(date, 'Date') ? date : new Date(date);
 
         var typeObj = {
             yyyy: 'setFullYear',

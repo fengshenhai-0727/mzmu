@@ -209,6 +209,12 @@ define(['./type'], function(mu, _) {
      * mu.isEmpty(0)
      * //-> true
      *
+     * mu.isEmpty('0')
+     * //-> true
+     *
+     * mu.isEmpty('00')
+     * //-> false !!! 
+     *
      * mu.isEmpty(false)
      * //-> true
      *
@@ -225,7 +231,8 @@ define(['./type'], function(mu, _) {
         if(!rst) {
             switch(_.type(any)) {
                 case 'string':
-                    rst = any.replace(/(^\s*)|(\s*$)/g, '').length === 0;
+                    var s = any.replace(/(^\s*)|(\s*$)/g, '');
+                    rst = s.length === 0 || s === '0';
                     break;
                 case 'array':
                     rst = any.length === 0;

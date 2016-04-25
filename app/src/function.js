@@ -116,5 +116,29 @@ define(function(mu) {
         };
     };
 
+    // mu.once
+
+
+    /**
+     * mu.after(Int n, Function fn[, Object scope])
+     * fn 运行 n 次后生效
+     * @param n
+     * @param fn
+     * @param scope
+     * @returns {Function}
+     */
+    mu.after = function(/**Int*/ n, /**Function*/ fn, /**Object*/ context){
+
+        if (!_.isFunction(fn)) {
+            throw new TypeError();
+        }
+
+        return function() {
+            if (--n < 1) {
+                return fn.apply(context, arguments);
+            }
+        };
+    };
+
     return mu;
 });

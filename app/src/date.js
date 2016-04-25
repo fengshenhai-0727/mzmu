@@ -4,13 +4,13 @@
 
 define(function(mu) {
 
-    /**
+     /**
      * mu.now()
      * 当前时间
      * @returns {Date}
      */
-    mu.now = function() {
-        return new Date();
+    mu.now = function(/**Boolean*/ timestamp) {
+        return timestamp ? + new Date() : new Date();
     };
 
     /**
@@ -50,6 +50,8 @@ define(function(mu) {
      */
     mu.timestamp = function(/**{date}*/ date, /**[{string}]*/ initType, /**[boolean]*/ short) {
         date = date || new Date();
+
+        date = _.type(date, 'Date') ? date : new Date(date);
 
         var typeObj = {
             yyyy: 'setFullYear',

@@ -46,7 +46,6 @@ define(function(mu, _){
             return b;
         }
 
-        var p = typeof con === 'function' ? b : con;
         return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -72,6 +71,18 @@ define(function(mu, _){
      */
     mu.exist = function(con, inbox, outbox) {
         return _.isExist(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+    };
+
+    /**
+     * mu.empty
+     * 如果con 为空 -> inbox ::else outbox
+     * @param {any} con : not function
+     * @param {any} inbox
+     * @param {any} outbox
+     * @returns {*}
+     */
+    mu.empty = function(con, inbox, outbox){
+        return _.isEmpty(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
     /**
