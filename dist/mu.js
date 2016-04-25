@@ -176,22 +176,23 @@
      */
     mu.type = function(any, type) {
 
-        return _.run(type, function(type) {
-            return type === _.type(any);
-        }, function(type) {
-            // vaild undefined and null
-            if(any === null || any === undefined) {
-                return String(any);
-            }
+        if(type){
+            return type === _.type(type);
+        }
 
-            var reg = /\[object (Boolean|Number|String|Function|Array|Date|RegExp)\]/;
-            var typeMap = objPro.toString.call(Object(any));
-            typeMap = reg.exec(typeMap);
+        // vaild undefined and null
+        if(any === null || any === undefined) {
+            return String(any);
+        }
 
-            type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : 'object';
+        var reg = /\[object (Boolean|Number|String|Function|Array|Date|RegExp)\]/;
+        var typeMap = objPro.toString.call(Object(any));
+        typeMap = reg.exec(typeMap);
 
-            return type;
-        });
+        type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : 'object';
+
+        return type;
+        
     };
 
 
