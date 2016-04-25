@@ -103,8 +103,8 @@
         if(arguments.length ===1){
             return b;
         }
-
-        return b ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+        
+        return mu.isNotEmpty(b) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
     /**
