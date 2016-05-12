@@ -86,6 +86,18 @@ define(function(mu, _){
     };
 
     /**
+     * mu.have
+     * 如果con 为空 -> inbox ::else outbox
+     * @param {any} con : not function
+     * @param {any} inbox
+     * @param {any} outbox
+     * @returns {*}
+     */
+    mu.have = function(con, inbox, outbox){
+        return _.isNotEmpty(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
+    };
+
+    /**
      * mu.injector(Function fn[, Any any...])
      * 闭包的又一种写法, 向方法中注入参数
      * @params any

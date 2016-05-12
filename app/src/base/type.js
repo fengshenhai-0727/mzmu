@@ -9,7 +9,7 @@ define(['./run'], function(mu, _) {
     mu.type = function(any, type) {
 
         if(type){
-            return type === _.type(type);
+            return type === _.type(any);
         }
 
         // vaild undefined and null
