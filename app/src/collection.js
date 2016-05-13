@@ -230,6 +230,35 @@ define(function(mu) {
 
 
     // mu.get
+     
+    // mu.pick = function(/**Object*/ collect, /**Function*/ fn, /**Object|Array*/ initData, /**Object*/ context){
+    //     var rst;
+
+    //     _.run(initData, function(data){
+    //         rst = data;
+    //     }, function(){
+    //         rst = _.isObject(collect) ? {} : [];
+    //     });
+
+    //     _.each(collect, function(item, i){
+    //         var cb = fn.call(context, item, i);
+
+    //         if(cb){
+
+
+
+    //         }
+
+
+    //     });
+
+
+
+
+
+
+
+    // }; 
 
 
     return mu;

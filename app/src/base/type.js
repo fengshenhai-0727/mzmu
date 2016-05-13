@@ -21,7 +21,7 @@ define(['./run'], function(mu, _) {
         var typeMap = objPro.toString.call(Object(any));
         typeMap = reg.exec(typeMap);
 
-        type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : 'object';
+        type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : _.isElement(any) ? 'element' : 'object';
 
         return type;
         
