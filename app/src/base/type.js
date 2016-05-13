@@ -17,6 +17,10 @@ define(['./run'], function(mu, _) {
             return String(any);
         }
 
+        if(any.nodeType === 1){
+            return 'element';
+        }
+
         var reg = /\[object (Boolean|Number|String|Function|Array|Date|RegExp)\]/;
         var typeMap = objPro.toString.call(Object(any));
         typeMap = reg.exec(typeMap);
