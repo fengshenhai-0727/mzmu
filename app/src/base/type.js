@@ -17,6 +17,7 @@ define(['./run'], function(mu, _) {
             return String(any);
         }
 
+        // todo element 校验判断
         if(any.nodeType === 1){
             return 'element';
         }

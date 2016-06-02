@@ -4,42 +4,39 @@
 
 define(function(mu) {
     /**
-     * mu.remove(Collection src, Any item)
+     * mu.remove(Collection src, Any conditions)
      * 删除集合中的某一项
-     * @param  src
-     * @param  item
-     * @return {Object|Array}
+     * @param collect
+     * @param conditions 删除条件, 可以是某个属性或索引值, 也可以是某个方法
+     * @returns {*|Array}
      *
      * exp.
      *
      * mu.remove({a:1, b:2, c:3, d:4, e:5}, function(v, k){
-	 *	    return v % 2 === 0
-	 *	})
+     *      return v % 2 === 0
+     *  })
      * // -> {a: 1, c: 3, e: 5}
      *
      * mu.remove([1,2,3,4,5], function(v, k){
-	 *     	return v % 2 === 0
-	 * })
+     *      return v % 2 === 0
+     * })
      * // ->[1, 3, 5]
      *
      */
-    mu.remove = function(/**{collection}*/ src, /**{any}*/ item) {
-
-        if(_.isFunction(item)) {
-            _.each(src, function(v, k) {
-                if(item.call(null, v, k, src)) {
-                    src = _.remove(src, k);
-                }
-            });
-        } else {
-            if(_.isArray(src) && _.isNumeric(item)) {
-                src.splice(item, 1);
-            } else {
-                delete src[item];
-            }
+    mu.remove = function(/**{collection}*/ collect, /**{any}*/ conditions){
+        var callfn = conditions;
+        if(!_.isFunction(conditions)){
+            callfn = function(o, key){
+                return key === conditions;
+            };
         }
-
-        return src;
+        return _.map(collect, function(o, key){
+            if(callfn.call(null, o, key, collect)) {
+                return C.REMOVE_MAP;
+            }else{
+                return o;
+            }
+        });
     };
 
     /**
@@ -231,6 +228,7 @@ define(function(mu) {
 
     // mu.get
      
+     // todo pick
     // mu.pick = function(/**Object*/ collect, /**Function*/ fn, /**Object|Array*/ initData, /**Object*/ context){
     //     var rst;
 

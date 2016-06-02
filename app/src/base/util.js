@@ -120,6 +120,8 @@ define(function(mu) {
         return false;
     };
 
+    mu.compare = mu.or;
+
     /**
      * mu.and(Any src, Any t1....tn)
      * 比较  等同于  src === t1 && src === t2 && src === t3 ...
