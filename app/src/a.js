@@ -140,14 +140,22 @@ define(function(mu) {
          * @param opts
          */
         URI.rebuild = function(opts){
-            opts = mu.extend(URI, opts);
-            mu.run(opts.query, function(query){
+            opts = mu.extend(true, URI, opts);
+
+            mu.run(opts.query, function(query) {
                 opts.search = _.param(query);
             });
-            mu.run(opts.routerQuery, function(query){
-                opts.hash = (opts.router || opts.hash) + '?' + _.param(opts.routerQuery);
+
+            var routerSearch = _.run(opts.routerQuery, function(query) {
+                return _.param(query);
             });
+
+            routerSearch = routerSearch ? '?' + routerSearch : '';
+
+            opts.hash = _.ifnvl(opts.router, opts.hash) + routerSearch;
+
             parser = _.extend(parser, opts);
+
             return parser.href;
         };
 
