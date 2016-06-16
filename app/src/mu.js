@@ -7,6 +7,7 @@ define([
     'string',
     'date',
     'utility',
-    'dom'
+    'dom',
+    'a'
 ]);
 

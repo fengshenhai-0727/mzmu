@@ -3,7 +3,16 @@
  * 类似undestore的JS方法库
  *
  * PS: 基本上不考虑 IE6/7
+ *
  */
+
+//若要求道（ To follow the path:）
+//看着大师（ look to the master,）
+//追隨大师（ follow the master,）
+//接近大师（ walk with the master,）
+//看穿大师（ see through the master,）
+//成为大师（ become the master.
+
 (function(window, undefined) {
    // 'use strict';
 

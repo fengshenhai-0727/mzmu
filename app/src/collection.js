@@ -110,6 +110,28 @@ define(function(mu) {
     };
 
     /**
+     * mu.flatWithBracket(Object obj)
+     * 将对象扁平化显示, 属性标识全部使用[]
+     * @param obj
+     * @param isBracket
+     * @returns {{}}
+     */
+    mu.flatWithBracket = function(/**{object}*/ obj, /**{boolean}*/ isBracket){
+        var rst = {};
+        _.each(obj, function(v, k) {
+            var key = isBracket ? '['+ k +']' : k;
+            if(typeof v === 'object') {
+                _.each(_.flatWithBracket(v, true), function(vv, kk) {
+                    rst[key + '' + kk] = vv;
+                });
+            } else {
+                rst[key] = v;
+            }
+        });
+        return rst;
+    };
+
+    /**
      * mu.flatToCharin(Object obj)
      * 将扁平化对象转为链型对象
      * @params obj
