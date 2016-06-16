@@ -159,6 +159,20 @@ define(function(mu) {
             return parser.href;
         };
 
+        /**
+         * 通过回调函数重写URL部分参数
+         * @param fn
+         */
+        URI.reform = function(fn){
+            var opts = fn.call(null, URI);
+
+            if(_.isEmptyObject(opts)){
+                return console.error('回调函数必须返回对象');
+            }
+
+            return URI.rebuild(opts);
+        };
+
         return URI;
     };
 

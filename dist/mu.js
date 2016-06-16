@@ -14,7 +14,7 @@
 //成为大师（ become the master.
 
 (function(window, undefined) {
-    // 'use strict';
+   // 'use strict';
 
     // 创建闭包全局
     var root = this;
@@ -64,6 +64,9 @@
 //})()
 
 
+
+
+
     /**
      * ifunction_
      * 如果参数是function, 就允许它, 否则返回原参数
@@ -73,8 +76,8 @@
      * @param {object} context
      * @protected
      */
-    _.iffn = function(fn, args, context) {
-        if(typeof fn === 'function') {
+    _.iffn =  function (fn, args, context){
+        if(typeof fn === 'function'){
             return fn.apply(context, args || []);
         }
 
@@ -103,13 +106,13 @@
      *
      *   mu.run(con, 'if ture', 'if else')
      */
-    mu.run = function(con, inbox, outbox) {
+    mu.run = function (con, inbox, outbox){
         var b = _.iffn(con);
 
-        if(arguments.length === 1) {
+        if(arguments.length ===1){
             return b;
         }
-
+        
         return mu.isNotEmpty(b) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -120,7 +123,7 @@
      * @param outbox
      * @returns {*}
      */
-    mu.if = function(con, inbox, outbox) {
+    mu.if = function(con, inbox, outbox){
         return con ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -145,7 +148,7 @@
      * @param {any} outbox
      * @returns {*}
      */
-    mu.empty = function(con, inbox, outbox) {
+    mu.empty = function(con, inbox, outbox){
         return _.isEmpty(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -157,7 +160,7 @@
      * @param {any} outbox
      * @returns {*}
      */
-    mu.have = function(con, inbox, outbox) {
+    mu.have = function(con, inbox, outbox){
         return _.isNotEmpty(con) ? _.iffn(inbox, [con]) : _.iffn(outbox, [con]);
     };
 
@@ -165,13 +168,17 @@
      * mu.injector(Function fn[, Any any...])
      * 闭包的又一种写法, 向方法中注入参数
      * @params any
-     * @return {any}
+     * @return {any} 
      */
-    mu.injector = function(/**{fn}*/ fn, /**{any...}*/ any) {
+    mu.injector = function(/**{fn}*/ fn, /**{any...}*/ any){
         var args = _.args(arguments);
         fn = args.shift();
         return fn.apply(null, args);
     };
+
+
+
+
 
 
     /**
@@ -190,7 +197,7 @@
      */
     mu.type = function(any, type) {
 
-        if(type) {
+        if(type){
             return type === _.type(any);
         }
 
@@ -200,7 +207,7 @@
         }
 
         // todo element 校验判断
-        if(any.nodeType === 1) {
+        if(any.nodeType === 1){
             return 'element';
         }
 
@@ -211,8 +218,10 @@
         type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : _.isElement(any) ? 'element' : 'object';
 
         return type;
-
+        
     };
+
+
 
 
     /**
@@ -231,7 +240,7 @@
      * @param any
      * @returns {boolean}
      */
-    mu.isNull = function(/**{any}*/ any) {
+    mu.isNull = function(/**{any}*/ any){
         return any === null;
     };
 
@@ -240,7 +249,7 @@
      * @param any
      * @returns {boolean}
      */
-    mu.isUndefined = function(/**{any}*/ any) {
+    mu.isUndefined = function(/**{any}*/ any){
         return any === undefined;
     };
 
@@ -261,7 +270,7 @@
      * @param any
      * @return {boolean}
      */
-    mu.isInteger = function(/**{any}*/ any) {
+    mu.isInteger = function(/**{any}*/ any){
         return _.isNumeric(any) && any === parseInt(any);
     };
 
@@ -290,7 +299,7 @@
      * @param any
      * @returns {boolean}
      */
-    mu.isDate = function(/**{any}*/ any) {
+    mu.isDate = function(/**{any}*/ any){
         return _.type(any, 'date');
     };
 
@@ -310,7 +319,7 @@
      *  mu.isDateLike('abdde')
      *  //-> false
      */
-    mu.isDateLike = function(/**{any}*/ any) {
+    mu.isDateLike = function(/**{any}*/ any){
         var d = new Date(any);
         return d.toString() !== 'Invalid Date';
     };
@@ -338,7 +347,7 @@
      * @param any
      * @returns {boolean}
      */
-    mu.isFunction = function(/**{Any}*/ any) {
+    mu.isFunction = function(/**{Any}*/ any){
         return typeof any === 'function';
     };
 
@@ -428,7 +437,7 @@
      * //-> true
      *
      * mu.isEmpty('00')
-     * //-> false !!!
+     * //-> false !!! 
      *
      * mu.isEmpty(false)
      * //-> true
@@ -464,7 +473,7 @@
         return rst;
     };
 
-    mu.isNotEmpty = function() {
+    mu.isNotEmpty = function(){
         var args = _.args(arguments);
         return !_.isEmpty.apply(null, args);
     };
@@ -507,7 +516,7 @@
         return !(any === null || any === undefined);
     };
 
-    mu.isNotExist = function() {
+    mu.isNotExist = function(){
         var args = _.args(arguments);
         return !_.isExist.apply(null, args);
     };
@@ -518,11 +527,11 @@
      * @param any
      * @returns {boolean}
      */
-    mu.isIf = function(/**{Any}*/ any) {
+    mu.isIf = function(/**{Any}*/ any){
         return !!any;
     };
 
-    mu.isNotIf = function() {
+    mu.isNotIf = function(){
         var args = _.args(arguments);
         return !_.isIf.apply(null, args);
     };
@@ -557,6 +566,9 @@
         var length = _.isExist(any) && typeof any === 'object' && !_.isPlainObject(any) && any.length;
         return typeof length === 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
     };
+
+
+
 
 
     /**
@@ -594,7 +606,7 @@
      * //-> []
      *
      */
-    mu.ifnvl = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn) {
+    mu.ifnvl = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn){
         return _.isExist(src) ? (fn ? fn.call(null, src, target) : src ) : target;
     };
 
@@ -635,7 +647,7 @@
      * //-> mu.js
      *
      */
-    mu.ifempty = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn) {
+    mu.ifempty = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn){
         return !_.isEmpty(src) ? (fn ? fn.call(null, src, target) : src ) : target;
     };
 
@@ -670,7 +682,7 @@
      * //-> {}
      *
      */
-    mu.ifif = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn) {
+    mu.ifif = function(/**{any}*/ src, /**{any}*/ target, /**{function}*/ fn){
         return src ? (fn ? fn.call(null, src, target) : src ) : target;
     };
 //mu.has = function(con, inbox, outbox){
@@ -690,9 +702,10 @@
 //        return con !== undefined && con !== null;
 //    });
 //};
-    /**
-     * 暗黑小工具
-     */
+/**
+ * 暗黑小工具
+ */
+
 
 
     /**
@@ -715,11 +728,11 @@
      * // -> args2:::->  [3, 4]
      * // -> args3:::-> [3, 4, __0__: Object, __1__: Object]
      */
-    mu.args = function(/**{boolean}*/ expand, /**{arguments}*/ args, /**{int}*/ start) {
+    mu.args = function(/**{boolean}*/ expand, /**{arguments}*/ args, /**{int}*/ start){
 
-        if(_.type(arguments[0], 'boolean')) {
+        if(_.type(arguments[0], 'boolean')){
             expand = arguments[0];
-        } else {
+        }else{
             args = arguments[0];
             start = arguments[1];
             expand = false;
@@ -727,8 +740,8 @@
 
         args = slice.call(args, start || 0);
 
-        if(expand) {
-            _.each(args, function(v, i) {
+        if(expand){
+            _.each(args, function(v, i){
                 args['__' + i + '__'] = {
                     type: _.type(v),
                     val: v
@@ -752,7 +765,7 @@
      * // -> []
      *
      */
-    mu.reorigin = function(/**{any}*/ any) {
+    mu.reorigin = function(/**{any}*/ any){
         return {
             'string': '',
             'number': 0,
@@ -776,8 +789,8 @@
      * mu.create(1)
      * // -> [1]
      */
-    mu.create = function(/**{any}*/ val, /**[any]*/ key) {
-        return arguments.length === 1 ? [val] : _.run(function() {
+    mu.create = function(/**{any}*/ val, /**[any]*/ key){
+        return arguments.length === 1 ? [val] : _.run(function(){
             var obj = {};
             obj[key] = val;
             return obj;
@@ -797,13 +810,13 @@
      * mu.or(1, '1', '01', '-1', 1)
      * // ->  true
      */
-    mu.or = function(/**{any}*/ src, /**{any...}*/ target) {
+    mu.or = function(/**{any}*/ src, /**{any...}*/ target){
         var args = _.args(arguments);
         src = args.shift();
 
-        for(var i = 0, l = args.length; i < l; i++) {
+        for(var i = 0, l = args.length; i < l; i ++){
             target = args[i];
-            if(src === target) {
+            if(src === target){
                 return true;
             }
         }
@@ -826,13 +839,13 @@
      * mu.or(1, '1', '01', '-1', 1)
      * // ->  false
      */
-    mu.and = function(/**{any}*/ src, /**{any...}*/ target) {
+    mu.and = function(/**{any}*/ src, /**{any...}*/ target){
         var args = _.args(arguments);
         src = args.shift();
 
-        for(var i = 0, l = args.length; i < l; i++) {
+        for(var i = 0, l = args.length; i < l; i ++){
             target = args[i];
-            if(src !== target) {
+            if(src !== target){
                 return false;
             }
         }
@@ -846,7 +859,7 @@
      * @param any
      * @returns {string}
      *
-     * exp.
+     * exp. 
      *
      * mu.toStringWithType(1)
      * // -> 'number_1'
@@ -854,7 +867,7 @@
      * mu.toStringWithType(1)
      * // -> 'string_1'
      */
-    mu.toStringWithType = function(/**{any}*/ any) {
+    mu.toStringWithType = function(/**{any}*/ any){
         return _.type(any) + '__' + any;
     };
 
@@ -892,13 +905,13 @@
             case 'webkit':
             // Trident -> MSHTML 浏览器排版引擎
             case 'trident':
-                // Google chrome 浏览器
+            // Google chrome 浏览器
                 return b_(name);
 
             // Gecko 浏览器引擎
             case 'gecko':
 
-                return _.run(UA.indexOf('Gecko') >= 0 && !envi('khtml') && !envi('webkit') && !envi('trident'), null, function() {
+                return _.run(UA.indexOf('Gecko') >= 0 && !envi('khtml') && !envi('webkit') && !envi('trident'), null, function(){
                     return TV;
                 });
 
@@ -911,9 +924,10 @@
                 return UA.indexOf('adobeair') >= 0;
         }
     };
-    /**
-     * 迭代器
-     */
+/**
+ * 迭代器
+ */
+
 
 
     /**
@@ -959,6 +973,7 @@
                         }
                     }
                 }
+
 
 
                 break;
@@ -1087,9 +1102,10 @@
 
         return src;
     };
-    /**
-     * 迭代器
-     */
+/**
+ * 迭代器
+ */
+
 
 
     /**
@@ -1112,9 +1128,9 @@
         return _.extend(true, {}, any);
     };
 
-    /**
-     * 数组
-     */
+/**
+ * 数组
+ */
 
 
 
@@ -1243,13 +1259,13 @@
             1: _.isUndefined,
             2: _.isNotExist,
             3: _.isIf,
-            4: _.isEmpty
+            4:_.isEmpty
         };
 
-        return _.map(arr, function(v) {
-            if(fn[level](v)) {
+        return _.map(arr, function(v){
+            if(fn[level](v)){
                 return C.REMOVE_MAP;
-            } else {
+            }else{
                 return v;
             }
         });
@@ -1263,7 +1279,7 @@
      * @param index
      * @returns {{array}}
      */
-    mu.insert = function(/**{array}*/ arr, /**{any}*/ val, /**{int}*/ index) {
+    mu.insert = function(/**{array}*/ arr, /**{any}*/ val, /**{int}*/ index){
         var l = arr.length;
         index = index > l ? l : index < 0 ? 0 : index || 0;
         arr.splice(index, 0, val);
@@ -1277,11 +1293,11 @@
      * @param item
      * @returns {{int}}
      */
-    mu.indexOf = function(/**{array}*/ arr, /**{any}*/ item) {
+    mu.indexOf = function(/**{array}*/ arr, /**{any}*/ item){
         item = _.toStringWithType(item);
         var index = -1;
-        _.each(arr, function(v, i) {
-            if(item === _.toStringWithType(v)) {
+        _.each(arr, function(v, i){
+            if(item === _.toStringWithType(v)){
                 index = i;
                 return false;
             }
@@ -1289,6 +1305,16 @@
 
         return index;
     };
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -1347,7 +1373,7 @@
             //      }
             //  })()
 
-            return _.map(obj, function(key) {
+            return _.map(obj, function(key){
                 return key;
             }, []);
         });
@@ -1359,14 +1385,14 @@
      * @param obj
      * @returns {Array}
      */
-    mu.vals = function(/**{object}*/ obj) {
-        return _.map(obj, function(key, val) {
+    mu.vals = function(/**{object}*/ obj){
+        return _.map(obj, function(key, val){
             return val;
         }, []);
     };
-    /**
-     * 集合
-     */
+/**
+ * 集合
+ */
 
 
     /**
@@ -1389,17 +1415,17 @@
      * // ->[1, 3, 5]
      *
      */
-    mu.remove = function(/**{collection}*/ collect, /**{any}*/ conditions) {
+    mu.remove = function(/**{collection}*/ collect, /**{any}*/ conditions){
         var callfn = conditions;
-        if(!_.isFunction(conditions)) {
-            callfn = function(o, key) {
+        if(!_.isFunction(conditions)){
+            callfn = function(o, key){
                 return key === conditions;
             };
         }
-        return _.map(collect, function(o, key) {
+        return _.map(collect, function(o, key){
             if(callfn.call(null, o, key, collect)) {
                 return C.REMOVE_MAP;
-            } else {
+            }else{
                 return o;
             }
         });
@@ -1482,10 +1508,10 @@
      * @param isBracket
      * @returns {{}}
      */
-    mu.flatWithBracket = function(/**{object}*/ obj, /**{boolean}*/ isBracket) {
+    mu.flatWithBracket = function(/**{object}*/ obj, /**{boolean}*/ isBracket){
         var rst = {};
         _.each(obj, function(v, k) {
-            var key = isBracket ? '[' + k + ']' : k;
+            var key = isBracket ? '['+ k +']' : k;
             if(typeof v === 'object') {
                 _.each(_.flatWithBracket(v, true), function(vv, kk) {
                     rst[key + '' + kk] = vv;
@@ -1596,9 +1622,9 @@
         var args = _.args(arguments), keys;
         var rst = collect || window;
 
-        if(args.length > 2) {
+        if(args.length > 2){
             keys = args.slice(1);
-        } else {
+        }else{
             keys = propStr.split('.');
         }
 
@@ -1615,8 +1641,8 @@
 
 
     // mu.get
-
-    // todo pick
+     
+     // todo pick
     // mu.pick = function(/**Object*/ collect, /**Function*/ fn, /**Object|Array*/ initData, /**Object*/ context){
     //     var rst;
 
@@ -1632,13 +1658,20 @@
     //         if(cb){
 
 
+
     //         }
 
 
     //     });
 
 
+
+
+
+
+
     // };
+
 
 
     // mu.bind
@@ -1655,17 +1688,17 @@
     mu.bind = function(/**{function}*/ fn, /**{object}*/ context, /**{any...}*/ any) {
         var nativeBind = fnPro.bind, args = _.args(arguments);
         fn = args.shift();
-        return _.run(nativeBind && nativeBind === fn.bind, function() {
+        return _.run(nativeBind && nativeBind === fn.bind, function(){
             return nativeBind.apply(fn, args);
-        }, function() {
+        }, function(){
             context = args.shift();
 
-            var bound = function() {
+            var bound =  function(){
                 // 绑定参数传递
                 args = args.concat(_.args(arguments));
 
                 // 普通function绑定
-                if(!(this instanceof bound)) {
+                if(!(this instanceof  bound)){
                     return fn.apply(context, args);
                 }
 
@@ -1674,9 +1707,7 @@
                 var self = new Ctor();
                 Ctor.prototype = null;
                 var result = fn.apply(self, args);
-                if(_.isObject(result)) {
-                    return result;
-                }
+                if (_.isObject(result)) return result;
                 return self;
             };
 
@@ -1692,11 +1723,11 @@
      * @param keys: if keys == null then keys = Object.keys(keys)
      * @returns {{object}}
      */
-    mu.bindAll = function(/**{object}*/ obj, /**{string...}*/ keys) {
+    mu.bindAll = function(/**{object}*/ obj, /**{string...}*/ keys){
         var args = _.isUndefined(keys) ? _.keys(obj) : _.args(keys, 1);
-        _.each(args, function(k) {
-            _.run(obj[k], function(fn) {
-                if(_.isFunction(fn)) {
+        _.each(args, function(k){
+            _.run(obj[k], function(fn){
+                if(_.isFunction(fn)){
                     obj[k] = _.bind(fn, obj);
                 }
             });
@@ -1769,14 +1800,14 @@
      * @param scope
      * @returns {Function}
      */
-    mu.after = function(/**Int*/ n, /**Function*/ fn, /**Object*/ context) {
+    mu.after = function(/**Int*/ n, /**Function*/ fn, /**Object*/ context){
 
-        if(!_.isFunction(fn)) {
+        if (!_.isFunction(fn)) {
             throw new TypeError();
         }
 
         return function() {
-            if(--n < 1) {
+            if (--n < 1) {
                 return fn.apply(context, arguments);
             }
         };
@@ -1793,7 +1824,7 @@
      * @param postion
      * @returns {*}
      */
-    mu.trim = function(/**{string}*/ str, /**{string}*/ postion) {
+    mu.trim = function(/**{string}*/ str, /**{string}*/ postion){
         postion = postion || 'all';
 
         var reg = {
@@ -1834,14 +1865,14 @@
      * @param symbol
      * @returns {{string}}
      */
-    mu.leftpad = function(/**{string}*/ s, /**{int}*/ l, /**[string]*/ symbol) {
+    mu.leftpad = function(/**{string}*/ s, /**{int}*/ l, /**[string]*/ symbol){
         symbol = symbol || '0';
         s = String(s);
-        while(s.length < Math.abs(l)) {
+        while(s.length < Math.abs(l)){
             s = symbol + s;
         }
         return s;
-    };
+    }; 
 
     /**
      * mu.concat(String s1...)
@@ -1849,22 +1880,23 @@
      * @param s1
      * @returns {string|*}
      */
-    mu.concat = function(/**{string...}*/ s1) {
+    mu.concat = function(/**{string...}*/ s1){
         var args = _.args(arguments);
         return args.join('');
     };
-    /**
-     * 时间
-     */
+/**
+ * 时间
+ */
 
 
-    /**
+
+     /**
      * mu.now()
      * 当前时间
      * @returns {Date}
      */
     mu.now = function(/**Boolean*/ timestamp) {
-        return timestamp ? +new Date() : new Date();
+        return timestamp ? + new Date() : new Date();
     };
 
     /**
@@ -1917,9 +1949,9 @@
             SS: 'setMilliseconds'
         };
 
-        if(initType) {
-            _.each(typeObj, function(fn, type) {
-                if(initType.indexOf(type) > -1) {
+        if(initType){
+            _.each(typeObj, function(fn, type){
+                if(initType.indexOf(type) > -1){
                     date[fn](0);
                 }
             });
@@ -1962,16 +1994,16 @@
 
         src = args.shift();
 
-        var numfomart = function(str) {
-            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
+        var numfomart = function(str){
+            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g,',$1');
         };
 
-        switch(_.type(src)) {
+        switch( _.type(src) ){
             // 字符串替换 String.format
             case 'string':
-                if(_.isEmpty(args)) {
+                if(_.isEmpty(args)){
                     return numfomart(src);
-                } else {
+                }else{
                     return src.replace(/\{(\d+)\}/g, function(m, i) {
                         return args[i] || m;
                     });
@@ -1992,31 +2024,31 @@
                     S = src.getMilliseconds();
 
                 var dateVals = [
-                    {key: 'y{4}', val: y},
-                    {key: 'y{2}', val: _.leftpad(y % 100, 2)},
-                    {key: 'q', val: q},
-                    {key: 'M{2}', val: _.leftpad(M, 2)},
-                    {key: 'M', val: M},
-                    {key: 'w', val: w},
-                    {key: 'd{2}', val: _.leftpad(d, 2)},
-                    {key: 'd', val: d},
-                    {key: 'h{2}', val: _.leftpad(h, 2)},
-                    {key: 'h', val: h},
-                    {key: 'm{2}', val: _.leftpad(m, 2)},
-                    {key: 'm', val: m},
-                    {key: 's{2}', val: _.leftpad(s, 2)},
-                    {key: 's', val: s},
-                    {key: 'S{2}', val: S}
+                    {key: 'y{4}',  val: y},
+                    {key: 'y{2}',  val: _.leftpad(y % 100, 2)},
+                    {key: 'q',  val: q},
+                    {key: 'M{2}',  val: _.leftpad(M,2)},
+                    {key: 'M',  val: M},
+                    {key: 'w',  val: w},
+                    {key: 'd{2}',  val: _.leftpad(d,2)},
+                    {key: 'd',  val: d},
+                    {key: 'h{2}',  val: _.leftpad(h,2)},
+                    {key: 'h',  val: h},
+                    {key: 'm{2}',  val: _.leftpad(m,2)},
+                    {key: 'm',  val: m},
+                    {key: 's{2}',  val: _.leftpad(s,2)},
+                    {key: 's',  val: s},
+                    {key: 'S{2}',  val: S}
                 ];
 
                 format = args.shift() || '';
 
-                if(!format) {
+                if(!format){
                     return '';
                 }
 
-                _.each(dateVals, function(o) {
-                    var reg = new RegExp('(' + o.key + ')', 'g');
+                _.each(dateVals, function(o){
+                    var reg = new RegExp('('+ o.key +')', 'g');
                     format = format.replace(reg, o.val);
                 });
 
@@ -2028,24 +2060,24 @@
         }
     };
 
-    /**
-     * mu.storage(String key, Any val)
-     * localStorage 简化操作
-     * @param  {[type]} val [description]
-     * @return {[type]}     [description]
-     */
-    mu.storage = function(/**{string}*/ key, /**{any}*/ val) {
+	/**
+	 * mu.storage(String key, Any val)
+	 * localStorage 简化操作
+	 * @param  {[type]} val [description]
+	 * @return {[type]}     [description]
+	 */
+    mu.storage = function( /**{string}*/ key, /**{any}*/ val) {
         var rst;
-        if(arguments.length === 1) {
+        if (arguments.length === 1) {
             rst = localStorage.getItem(key);
-            if(_.type(rst, 'string')) {
+            if (_.type(rst, 'string')) {
                 try {
                     return JSON.parse(rst);
-                } catch(e) {
+                } catch (e) {
                     return rst || undefined;
                 }
-            } else {
-                return undefined;
+            }else{
+            	return undefined;
             }
         } else {
             rst = JSON.stringify(val);
@@ -2055,7 +2087,7 @@
     };
 
 
-    mu.ready = function(handler) {
+	mu.ready = function (handler) {
 
         var done = false,
             top = true,
@@ -2066,11 +2098,11 @@
             removeHandler = modern ? 'removeEventListener' : 'detachEvent',
             pre = modern ? '' : 'on',
 
-            readyfn = function(e) {
+            readyfn = function (e) {
                 var type = e.type;
 
                 // 保证页面加载过程中执行
-                if(type === 'readystatechange' && document.readyState !== 'complete') {
+                if (type === 'readystatechange' && document.readyState !== 'complete') {
                     return;
                 }
 
@@ -2078,17 +2110,17 @@
                 (type === 'load' ? window : document)[removeHandler](pre + type, readyfn, false);
 
                 // 执行事件
-                if(!done) {
+                if (!done) {
                     done = true;
                     handler.call(null, type || e);
                 }
             },
 
         // ie6-8 模拟DOMContentLoaded
-            doScroll = function() {
+            doScroll = function () {
                 try {
                     root.doScroll('left');
-                } catch(e) {
+                } catch (e) {
                     setTimeout(doScroll, 50);
                     return;
                 }
@@ -2096,19 +2128,19 @@
                 readyfn('poll');
             };
 
-        if(document.readyState === 'complete') {
+        if (document.readyState === 'complete') {
             handler.call(window, 'lazy');
         } else {
-            if(!modern && root.doScroll) {
+            if (!modern && root.doScroll) {
 
                 try {
                     // 判断当前页面是否已经完全载入（有 iframe 的情况））
                     top = !window.frameElement;
-                } catch(e) {
+                } catch (e) {
 
                 }
 
-                if(top) {
+                if (top) {
                     doScroll();
                 }
 
@@ -2121,12 +2153,13 @@
 
     };
 
-    /**
-     * a (location)
-     * 链接, 和链接相关的方法
-     *
-     * URI 说明图: https://www.sitepoint.com/url-parsing-isomorphic-javascript/
-     */
+/**
+ * a (location)
+ * 链接, 和链接相关的方法
+ *
+ * URI 说明图: https://www.sitepoint.com/url-parsing-isomorphic-javascript/
+ */
+
 
 
     /**
@@ -2137,12 +2170,12 @@
      * @param fn: 修正 params, (URL 必须先存在)
      * @returns {string}
      */
-    mu.param = function(/**{object}*/ obj, /**[string]*/ url, /**[function]*/ fn) {
-        if(!_.isObject(obj)) {
+    mu.param = function(/**{object}*/ obj, /**[string]*/ url, /**[function]*/ fn){
+        if(!_.isObject(obj)){
             return void 0;
         }
-        var deepDecodeURIComponent = function(v) {
-            mu.each(v.split('%'), function() {
+        var deepDecodeURIComponent = function(v){
+            mu.each(v.split('%'), function(){
                 v = decodeURIComponent(v);
             });
 
@@ -2151,10 +2184,10 @@
         var p = '';
         var params = _.flatWithBracket(obj);
         // 修正参数
-        if(url) {
+        if(url){
             params = fn ? fn.call(null, params, url) : params;
         }
-        _.each(params, function(v, k) {
+        _.each(params, function(v, k){
             v = mu.ifnvl(v, '') + '';
             v = deepDecodeURIComponent(v);
             k = deepDecodeURIComponent(k);
@@ -2169,9 +2202,9 @@
      * @param param
      * return obj
      */
-    mu.param2Obj = function(/**{string}*/ param) {
+    mu.param2Obj = function(/**{string}*/ param){
         var p = param.split('&');
-        return mu.map(p, function(kv) {
+        return mu.map(p, function(kv){
             var __kv__ = kv.split('=');
             return {
                 '__key__': __kv__[0],
@@ -2186,7 +2219,7 @@
      * @param url || location.href
      * @returns {*}
      */
-    mu.parseURL = function(/**[string]*/url) {
+    mu.parseURL = function(/**[string]*/url){
         var l = window.location;
         url = url || l.href;
         var parser = document.createElement('a');
@@ -2210,11 +2243,11 @@
             // 资源文件路径
             path: parser.pathname.replace(/^(.*)?\/.*/, '$1'),
             // get 请求参数
-            search: parser.search.replace(/^\?/, ''),
+            search: parser.search.replace(/^\?/,''),
             // get 请求参数对象
             query: {},
             // 锚点
-            hash: parser.hash.replace(/^#/, ''),
+            hash: parser.hash.replace(/^#/,''),
             // FTP 或其他协议的账号
             username: parser.username,
             // FTP 或其他协议的密码
@@ -2227,11 +2260,11 @@
         URI.query = _.param2Obj(URI.search);
 
         // 文件后缀名
-        URI.ext = mu.run(mu.last(URI.pathname.split('/')), function(item) {
+        URI.ext = mu.run(mu.last(URI.pathname.split('/')), function(item){
             var arr = item.split('.');
-            if(arr.length > 1) {
+            if(arr.length > 1){
                 return mu.last(arr);
-            } else {
+            }else{
                 return null;
             }
         });
@@ -2251,7 +2284,7 @@
             routerQuery: {}
         };
 
-        mu.run(router.routerSearch, function(routerSearch) {
+        mu.run(router.routerSearch, function(routerSearch){
             router.routerQuery = _.param2Obj(routerSearch);
         });
 
@@ -2261,8 +2294,7 @@
          * 按照参数重组URL
          * @param opts
          */
-        URI.rebuild = function(opts) {
-
+        URI.rebuild = function(opts){
             opts = mu.extend(true, URI, opts);
 
             mu.run(opts.query, function(query) {
@@ -2272,11 +2304,28 @@
             var routerSearch = _.run(opts.routerQuery, function(query) {
                 return _.param(query);
             });
+
             routerSearch = routerSearch ? '?' + routerSearch : '';
+
             opts.hash = _.ifnvl(opts.router, opts.hash) + routerSearch;
+
             parser = _.extend(parser, opts);
 
             return parser.href;
+        };
+
+        /**
+         * 通过回调函数重写URL部分参数
+         * @param fn
+         */
+        URI.reform = function(fn){
+            var opts = fn.call(null, URI);
+
+            if(_.isEmptyObject(opts)){
+                return console.error('回调函数必须返回对象');
+            }
+
+            return URI.rebuild(opts);
         };
 
         return URI;
@@ -2289,11 +2338,11 @@
      * @param opts
      * @returns {string}
      */
-    mu.rebuildURL = function(/**{string}*/ oldurl, /**{object}*/ opts) {
-        return _.parseURL(oldurl)
-            .rebuild(opts);
+    mu.rebuildURL = function(/**{string}*/ oldurl, /**{object}*/ opts){
+        return _.parseURL(oldurl).rebuild(opts);
     };
 
 
-    window.mu = mu;
+
+window.mu = mu;
 })(window);
