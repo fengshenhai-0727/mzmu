@@ -4,6 +4,8 @@
 
 define(function(mu) {
 
+    //@page base/util.js
+
     /**
      * mu.args(Arguments args)
      * 将 Arguments 转为一个数组

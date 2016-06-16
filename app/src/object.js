@@ -1,5 +1,7 @@
 define(function(mu) {
 
+    //@page object.js
+
     /**
      * mu.keys(Object obj)
      * 返回该对象的所有可枚举自身属性的属性名
