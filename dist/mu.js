@@ -60,6 +60,13 @@
         this.__chain__ = false;
     };
 
+    mu.is = {};
+
+    mu.verison = {
+        'current': '1.7.3',
+        '1.7.3': '修改判断当前代码运行环境, 添加一堆方法 mu.is.xxxx'
+    };
+
 
 //})()
 
@@ -222,6 +229,184 @@
     };
 
 
+/**
+ * 迭代器
+ */
+
+
+
+    /**
+     * mu.each(Any any, Function fn[, Object context])
+     * 遍历数据对象或集合
+     * @param any
+     * @param fn(val, key, src)
+     * @param context
+     */
+    mu.each = function(/**{any}*/ any, /**{function}*/ fn, /**[Object]*/ context) {
+        var i = 0;
+
+        switch(_.type(any)) {
+            case 'number':
+                while(i < any) {
+                    if(fn.call(context, i, i + 1, any) === false) {
+                        break;
+                    }
+
+                    i++;
+                }
+                break;
+            case 'array':
+            case 'string':
+
+                for(var l = any.length; i < l; i++) {
+                    if(fn.call(context, any[i], i, any) === false) {
+                        break;
+                    }
+                }
+
+                break;
+            case 'object':
+
+                // 兼容IE9 以下, 不能枚举的属性手动重定义的元素 propertyIsEnumerable 不能判断
+                // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
+                // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
+                // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
+                for(i in any) {
+                    if(any.hasOwnProperty(i)) {
+                        if(fn.call(context, any[i], i, any) === false) {
+                            break;
+                        }
+                    }
+                }
+
+
+
+                break;
+        }
+
+    };
+
+    /**
+     * mu.map(Object|Array obj, Function fn[, Object|Array initData, Object context)
+     * 映射源头, 生成新的对象或数组
+     * 史上最强大的 map
+     * @param obj
+     * @param fn
+     * @param initData
+     * @param context
+     * @returns {array}
+     *
+     * exp.
+     *
+     * mu.map([1,2,3], function(v, i){ return v*2; })
+     * // -> [2, 4, 6]
+     *
+     * mu.map({a: 'Mizi', b: 'Zichu'}, function(v, k){ return v + ' Lin'})
+     * // -> {a: 'Mizi Lin', b: 'Zichu Lin'}
+     *
+     * ## 移除数组中的 undefined, 返回新数组
+     * mu.map([1, undefined, undefined, 3], function(v, i){
+     *    if(v === undefined){
+     *      return '__remove_map__';
+     *    }else{
+     *      return v;
+     *    }
+     * })
+     *
+     * // -> [1, 3]
+     *
+     * ## 将数组转为对象, 用数组的索引最为对象的key, 值为值
+     * mu.map(['mizi', 'zichu', 'xiaoming'], function(v){return v;}, {});
+     * // ->  {0: 'mizi', 1: 'zichu', 2: 'xiaoming'}
+     *
+     * ## 将数组转为对象, 值为key, 索引为值
+     * mu.map(['mizi', 'zichu', 'xiaoming'], function(v, i){
+     *    return {
+     *      '__key__': v,
+     *      '__val__': i
+     *    };
+     * }, {});
+     * // -> {mizi: 0, zichu: 1, xiaoming: 2}
+     *
+     * ## 将对象转为一维数组, 值为数组值
+     * mu.map({a:'mizi', b: 'zichu'}, function(v){ return v; }, [])
+     * // -> ['mizi', 'zichu']
+     *
+     */
+    mu.map = function(/**{object|array}*/ obj, /**{function}*/ fn, /**[object|array]*/ initData, /**[Object]*/ context) {
+        if(!(obj && fn && _.isFunction(fn))) {
+            return obj;
+        }
+
+        var rst = initData ? initData : _.isArrayLike(obj) ? [] : {};
+
+        _.each(obj, function(v, k) {
+            var cb = fn.call(context, v, k, obj);
+
+            if(cb !== C.REMOVE_MAP) {
+                if(_.isObject(rst)) {
+                    if(cb && cb.__key__) {
+                        rst[cb.__key__] = cb.__val__;
+                    } else {
+                        rst[k] = cb;
+                    }
+                } else {
+                    rst[rst.length] = cb;
+                }
+            }
+        });
+
+        return rst;
+
+    };
+
+    /**
+     * mu.extend([Boolean isDeep,] Object src, Object ...target)
+     * 将src的属性覆盖到target上，若有相同的属性，会完全覆盖
+     * target 从后向前覆盖
+     * @param isDeep 是否深层覆盖
+     * @param src
+     * @param target...
+     * @returns {{object}}
+     *
+     * exp.
+     *
+     * mu.extend({a:{d: 2}, b:2}, {a:{e:3}, c:4})
+     * // -> {a:{e:3}, b:2, c:4}
+     *
+     * mu.extend(true, {a: {d: 2}, b:2}, {a:{e:3}, c:4})
+     * // -> {a:{d:2, e:3}, b:2, c:4}
+     *
+     * mu.extend({}, {}, {}...)
+     */
+    mu.extend = function(/**{boolean}*/ isDeep, /**{object}*/ src, /**[object...]*/ target) {
+        var args = _.args(arguments);
+
+        if(_.type(isDeep, 'boolean')) {
+            isDeep = args.shift();
+        } else {
+            isDeep = false;
+        }
+
+        src = args[0];
+
+        // support object and array
+        if(typeof src !== 'object') {
+            return src;
+        }
+
+        _.each(args, function(target) {
+            _.each(target, function(oo, kk) {
+                if(isDeep) {
+                    src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
+                } else {
+                    src[kk] = oo;
+                }
+            });
+        });
+
+        return src;
+    };
 
 
     /**
@@ -571,6 +756,8 @@
 
 
 
+
+
     /**
      * mu.ifnvl(Any src, Any target)
      * 如果 src 为 null 或 undefined 则输出 target 否则 输出 src 或 fn 的值
@@ -872,238 +1059,6 @@
     mu.toStringWithType = function(/**{any}*/ any){
         return _.type(any) + '__' + any;
     };
-
-
-    /**
-     * 获得当前JS允许的环境(浏览器, 设备, 系统)
-     */
-    var NG = window.navigator,
-        UA = NG.userAgent.toLowerCase(),
-        AV = NG.appVersion,
-        TV = parseFloat(AV);
-
-    /**
-     * mu.envi(String name)
-     * 获得当前JS运行的环境(浏览器, 设备, 系统)
-     * @param name
-     * @returns {*}
-     */
-    mu.envi = function(/**{string}*/ name) {
-
-        var b_ = function(name) {
-            return parseFloat(UA.split(name + '/')[1]) || undefined;
-        };
-
-        var envi = _.envi;
-
-        switch(name) {
-            // ADOBE AIR
-            case 'air':
-                return UA.indexOf('adobeair') >= 0;
-            // KHTML 浏览器排版引擎
-            case 'khtml':
-                return AV.indexOf('konqueror') >= 0 ? TV : undefined;
-            // webkit 浏览器引擎
-            case 'webkit':
-            // Trident -> MSHTML 浏览器排版引擎
-            case 'trident':
-            // Google chrome 浏览器
-                return b_(name);
-
-            // Gecko 浏览器引擎
-            case 'gecko':
-
-                return _.run(UA.indexOf('Gecko') >= 0 && !envi('khtml') && !envi('webkit') && !envi('trident'), null, function(){
-                    return TV;
-                });
-
-            case 'chrome':
-                return b_(name);
-            // Apple Safari 浏览器
-            case 'safari':
-                return AV.indexOf('Safari') >= 0 && !envi('chrome') && b_('version');
-            case 'air3':
-                return UA.indexOf('adobeair') >= 0;
-        }
-    };
-/**
- * 迭代器
- */
-
-
-
-    /**
-     * mu.each(Any any, Function fn[, Object context])
-     * 遍历数据对象或集合
-     * @param any
-     * @param fn(val, key, src)
-     * @param context
-     */
-    mu.each = function(/**{any}*/ any, /**{function}*/ fn, /**[Object]*/ context) {
-        var i = 0;
-
-        switch(_.type(any)) {
-            case 'number':
-                while(i < any) {
-                    if(fn.call(context, i, i + 1, any) === false) {
-                        break;
-                    }
-
-                    i++;
-                }
-                break;
-            case 'array':
-            case 'string':
-
-                for(var l = any.length; i < l; i++) {
-                    if(fn.call(context, any[i], i, any) === false) {
-                        break;
-                    }
-                }
-
-                break;
-            case 'object':
-
-                // 兼容IE9 以下, 不能枚举的属性手动重定义的元素 propertyIsEnumerable 不能判断
-                // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
-                // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
-                // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
-                for(i in any) {
-                    if(any.hasOwnProperty(i)) {
-                        if(fn.call(context, any[i], i, any) === false) {
-                            break;
-                        }
-                    }
-                }
-
-
-
-                break;
-        }
-
-    };
-
-    /**
-     * mu.map(Object|Array obj, Function fn[, Object|Array initData, Object context)
-     * 映射源头, 生成新的对象或数组
-     * 史上最强大的 map
-     * @param obj
-     * @param fn
-     * @param initData
-     * @param context
-     * @returns {array}
-     *
-     * exp.
-     *
-     * mu.map([1,2,3], function(v, i){ return v*2; })
-     * // -> [2, 4, 6]
-     *
-     * mu.map({a: 'Mizi', b: 'Zichu'}, function(v, k){ return v + ' Lin'})
-     * // -> {a: 'Mizi Lin', b: 'Zichu Lin'}
-     *
-     * ## 移除数组中的 undefined, 返回新数组
-     * mu.map([1, undefined, undefined, 3], function(v, i){
-     *    if(v === undefined){
-     *      return '__remove_map__';
-     *    }else{
-     *      return v;
-     *    }
-     * })
-     *
-     * // -> [1, 3]
-     *
-     * ## 将数组转为对象, 用数组的索引最为对象的key, 值为值
-     * mu.map(['mizi', 'zichu', 'xiaoming'], function(v){return v;}, {});
-     * // ->  {0: 'mizi', 1: 'zichu', 2: 'xiaoming'}
-     *
-     * ## 将数组转为对象, 值为key, 索引为值
-     * mu.map(['mizi', 'zichu', 'xiaoming'], function(v, i){
-     *    return {
-     *      '__key__': v,
-     *      '__val__': i
-     *    };
-     * }, {});
-     * // -> {mizi: 0, zichu: 1, xiaoming: 2}
-     *
-     * ## 将对象转为一维数组, 值为数组值
-     * mu.map({a:'mizi', b: 'zichu'}, function(v){ return v; }, [])
-     * // -> ['mizi', 'zichu']
-     *
-     */
-    mu.map = function(/**{object|array}*/ obj, /**{function}*/ fn, /**[object|array]*/ initData, /**[Object]*/ context) {
-        if(!(obj && fn && _.isFunction(fn))) {
-            return obj;
-        }
-
-        var rst = initData ? initData : _.isArrayLike(obj) ? [] : {};
-
-        _.each(obj, function(v, k) {
-            var cb = fn.call(context, v, k, obj);
-
-            if(cb !== C.REMOVE_MAP) {
-                if(_.isObject(rst)) {
-                    if(cb && cb.__key__) {
-                        rst[cb.__key__] = cb.__val__;
-                    } else {
-                        rst[k] = cb;
-                    }
-                } else {
-                    rst[rst.length] = cb;
-                }
-            }
-        });
-
-        return rst;
-
-    };
-
-    /**
-     * mu.extend([Boolean isDeep,] Object src, Object ...target)
-     * 将src的属性覆盖到target上，若有相同的属性，会完全覆盖
-     * target 从后向前覆盖
-     * @param isDeep 是否深层覆盖
-     * @param src
-     * @param target...
-     * @returns {{object}}
-     *
-     * exp.
-     *
-     * mu.extend({a:{d: 2}, b:2}, {a:{e:3}, c:4})
-     * // -> {a:{e:3}, b:2, c:4}
-     *
-     * mu.extend(true, {a: {d: 2}, b:2}, {a:{e:3}, c:4})
-     * // -> {a:{d:2, e:3}, b:2, c:4}
-     *
-     * mu.extend({}, {}, {}...)
-     */
-    mu.extend = function(/**{boolean}*/ isDeep, /**{object}*/ src, /**[object...]*/ target) {
-        var args = _.args(arguments);
-
-        if(_.type(isDeep, 'boolean')) {
-            isDeep = args.shift();
-        } else {
-            isDeep = false;
-        }
-
-        src = args[0];
-
-        // support object and array
-        if(typeof src !== 'object') {
-            return src;
-        }
-
-        _.each(args, function(target) {
-            _.each(target, function(oo, kk) {
-                if(isDeep) {
-                    src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
-                } else {
-                    src[kk] = oo;
-                }
-            });
-        });
-
-        return src;
-    };
 /**
  * 迭代器
  */
@@ -1129,6 +1084,86 @@
     mu.clone = function(/**{any}*/ any) {
         return _.extend(true, {}, any);
     };
+
+    /**
+     * environment
+     * 当前客户端环境判断(浏览器, 系统, ECMA)
+     */
+    _.run(function(){
+        var module = {
+            options: [],
+            header: [navigator.platform, navigator.userAgent, navigator.appVersion, navigator.vendor, window.opera],
+            dataos: [
+                {name: 'Windows Phone', value: 'Windows Phone', version: 'OS'},
+                {name: 'Windows', value: 'Win', version: 'NT'},
+                {name: 'iPhone', value: 'iPhone', version: 'OS'},
+                {name: 'iPad', value: 'iPad', version: 'OS'},
+                {name: 'Kindle', value: 'Silk', version: 'Silk'},
+                {name: 'Android', value: 'Android', version: 'Android'},
+                {name: 'PlayBook', value: 'PlayBook', version: 'OS'},
+                {name: 'BlackBerry', value: 'BlackBerry', version: '/'},
+                {name: 'Mac', value: 'Mac', version: 'OS X'},
+                {name: 'Linux', value: 'Linux', version: 'rv'},
+                {name: 'Palm', value: 'Palm', version: 'PalmOS'}
+            ],
+            databrowser: [
+                {name: 'Chrome', value: 'Chrome', version: 'Chrome'},
+                {name: 'Chromium', value: 'Chromium', version: 'Chromium'},
+                {name: 'Firefox', value: 'Firefox', version: 'Firefox'},
+                {name: 'Safari', value: 'Safari', version: 'Version'},
+                {name: 'IE', value: 'MSIE', version: 'MSIE'},
+                {name: 'Opera', value: 'Opera', version: 'Opera'},
+                {name: 'BlackBerry', value: 'CLDC', version: 'CLDC'},
+                {name: 'Edge', value: 'Edge', version: 'Edge'}
+            ],
+
+            datafoctory: [
+                {name: 'Mozilla', value: 'Mozilla', version: 'Mozilla'}
+            ],
+
+            matchItem: function(string, data) {
+                var rst = {name: 'unknown', version: 0, bigVersion: 0};
+
+                _.each(data, function(item){
+                    var regex = new RegExp(item.value, 'i');
+                    var version = _.run(regex.test(string), function(){
+                        var regexv = new RegExp(item.version + '[- /:;]([\\d._]+)', 'i');
+                        var matches = string.match(regexv) || [];
+                        return _.run(matches[1], function(version){
+                            var versions = version.split(/[._]+/);
+                            versions.splice(1, 0, '.');
+                            return  parseFloat(versions.join(''));
+                        });
+                    });
+
+                    _.run(version, function(){
+                        rst.name = item.name;
+                        rst.version = version;
+                        rst.bigVersion = parseInt(version);
+                    });
+
+                    _.is[item.name.toLowerCase()] = function(){
+                        return version;
+                    };
+                });
+
+                return rst;
+            }
+        };
+
+        var agent = module.header.join(' '),
+            os = module.matchItem(agent, module.dataos),
+            browser = module.matchItem(agent, module.databrowser);
+
+        mu.environment = function(/**[string]*/ type){
+            var rst = {
+                os: os,
+                browser: browser
+            };
+
+            return type ? rst[type] : rst;
+        };
+    });
 
 /**
  * 数组
@@ -2071,6 +2106,20 @@
      * @param key
      * @param val
      * @returns {*}
+     */
+
+    /**
+     * mu.storage('X-TOKEN', '123456')
+     * // -> set localStorage
+     *
+     * mu.storage('X-TOKEN')
+     * // -> 123456 ::: get localStorage
+     *
+     * mu.storage()
+     * // -> localStorage.clear()
+     *
+     * mu.storage( sessionStorage, 'X-TOKEN', '123456')
+     * // -> set sessionStorage
      */
     mu.storage = function(/**[object]*/ storage, /**{string}*/ key, /**[any]*/ val){
         var args = _.args(arguments);

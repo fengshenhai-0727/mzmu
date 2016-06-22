@@ -2,13 +2,13 @@ define([
     'base/run',
     'base/noop',
     'base/type',
+    'base/iterator',
     'base/is',
     'base/if',
     'base/has',
     'base/util',
-    'base/browser',
-    'base/iterator',
-    'base/copy'
+    'base/copy',
+    'base/environment'
 ], function(mu) {
     return mu;
 });

@@ -60,6 +60,13 @@
         this.__chain__ = false;
     };
 
+    mu.is = {};
+
+    mu.verison = {
+        'current': '1.7.3',
+        '1.7.3': '修改判断当前代码运行环境, 添加一堆方法 mu.is.xxxx'
+    };
+
 
 //})()
 

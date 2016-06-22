@@ -7,6 +7,20 @@ define(function(mu) {
      * @param val
      * @returns {*}
      */
+
+    /**
+     * mu.storage('X-TOKEN', '123456')
+     * // -> set localStorage
+     *
+     * mu.storage('X-TOKEN')
+     * // -> 123456 ::: get localStorage
+     *
+     * mu.storage()
+     * // -> localStorage.clear()
+     *
+     * mu.storage( sessionStorage, 'X-TOKEN', '123456')
+     * // -> set sessionStorage
+     */
     mu.storage = function(/**[object]*/ storage, /**{string}*/ key, /**[any]*/ val){
         var args = _.args(arguments);
 
