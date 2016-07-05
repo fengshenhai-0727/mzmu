@@ -8,6 +8,20 @@
 define(function(mu) {
 
     /**
+     * mu.deepDecodeURIComponent(String str)
+     * 将不知道多少倍的encode还原
+     * @param str
+     * @returns {{string}}
+     */
+    mu.deepDecodeURIComponent = function(/**{string}*/ str){
+        _.each(str.split('%'), function(){
+            str = decodeURIComponent(v);
+        });
+
+        return str;
+    };
+
+    /**
      * mu.param(Object obj[, String url, Function fn])
      * 将一个对象扁平化展示成一个GET方法的参数形式 (key=value&key=value)
      * @param obj
@@ -19,13 +33,7 @@ define(function(mu) {
         if(!_.isObject(obj)){
             return void 0;
         }
-        var deepDecodeURIComponent = function(v){
-            mu.each(v.split('%'), function(){
-                v = decodeURIComponent(v);
-            });
 
-            return v;
-        };
         var p = '';
         var params = _.flatWithBracket(obj);
         // 修正参数
@@ -34,8 +42,6 @@ define(function(mu) {
         }
         _.each(params, function(v, k){
             v = mu.ifnvl(v, '') + '';
-            v = deepDecodeURIComponent(v);
-            k = deepDecodeURIComponent(k);
             p = mu.concat(p, '&', encodeURIComponent(k), '=', encodeURIComponent(v));
         });
         return p.replace(/^\&/, '');

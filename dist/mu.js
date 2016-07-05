@@ -62,10 +62,7 @@
 
     mu.is = {};
 
-    mu.verison = {
-        'current': '1.7.3',
-        '1.7.3': '修改判断当前代码运行环境, 添加一堆方法 mu.is.xxxx'
-    };
+    mu.verison = '1.7.5';
 
 
 //})()
@@ -1088,7 +1085,10 @@
     /**
      * environment
      * 当前客户端环境判断(浏览器, 系统, ECMA)
+     * https://github.com/arasatasaygin/is.js/blob/master/is.js
      */
+
+    //@todo isWeixin, 浏览器引擎
     _.run(function(){
         var module = {
             options: [],
@@ -2134,7 +2134,27 @@
 
         // 如果key不存在, 则认为是 Storage.clear();
         if(!key){
-            return storage.clear();
+            var list = _.copy(storage);
+
+
+            return {
+                remove: function(key){
+                    return storage.removeItem(key);
+                },
+                clear: function(){
+                    return storage.clear();
+                },
+
+                list: function(){
+                    return _.map(list, function(o, k){
+                        return _.storage(storage, k);
+                    });
+                },
+
+                keys: function(){
+                    return _.keys(list);
+                }
+            };
         }
 
         return _.exist(val, function(){
@@ -2228,6 +2248,20 @@
 
 
     /**
+     * mu.deepDecodeURIComponent(String str)
+     * 将不知道多少倍的encode还原
+     * @param str
+     * @returns {{string}}
+     */
+    mu.deepDecodeURIComponent = function(/**{string}*/ str){
+        _.each(str.split('%'), function(){
+            str = decodeURIComponent(v);
+        });
+
+        return str;
+    };
+
+    /**
      * mu.param(Object obj[, String url, Function fn])
      * 将一个对象扁平化展示成一个GET方法的参数形式 (key=value&key=value)
      * @param obj
@@ -2239,13 +2273,7 @@
         if(!_.isObject(obj)){
             return void 0;
         }
-        var deepDecodeURIComponent = function(v){
-            mu.each(v.split('%'), function(){
-                v = decodeURIComponent(v);
-            });
 
-            return v;
-        };
         var p = '';
         var params = _.flatWithBracket(obj);
         // 修正参数
@@ -2254,8 +2282,6 @@
         }
         _.each(params, function(v, k){
             v = mu.ifnvl(v, '') + '';
-            v = deepDecodeURIComponent(v);
-            k = deepDecodeURIComponent(k);
             p = mu.concat(p, '&', encodeURIComponent(k), '=', encodeURIComponent(v));
         });
         return p.replace(/^\&/, '');

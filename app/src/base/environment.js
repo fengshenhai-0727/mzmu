@@ -2,7 +2,10 @@ define(function(mu) {
     /**
      * environment
      * 当前客户端环境判断(浏览器, 系统, ECMA)
+     * https://github.com/arasatasaygin/is.js/blob/master/is.js
      */
+
+    //@todo isWeixin, 浏览器引擎
     _.run(function(){
         var module = {
             options: [],

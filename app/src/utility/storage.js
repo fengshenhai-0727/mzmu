@@ -34,7 +34,27 @@ define(function(mu) {
 
         // 如果key不存在, 则认为是 Storage.clear();
         if(!key){
-            return storage.clear();
+            var list = _.copy(storage);
+
+
+            return {
+                remove: function(key){
+                    return storage.removeItem(key);
+                },
+                clear: function(){
+                    return storage.clear();
+                },
+
+                list: function(){
+                    return _.map(list, function(o, k){
+                        return _.storage(storage, k);
+                    });
+                },
+
+                keys: function(){
+                    return _.keys(list);
+                }
+            };
         }
 
         return _.exist(val, function(){
