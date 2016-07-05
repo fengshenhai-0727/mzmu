@@ -1,8 +1,8 @@
 {
-  "name": "atm",
-  "version": "0.1.0",
+  "name": "MU",
+  "version": "1.7",
   "private": true,
-  "description": "ATM TAGS MANAGERS",
+  "description": "MU",
   "author": "mizi",
   "repository": {
     "type": "git"

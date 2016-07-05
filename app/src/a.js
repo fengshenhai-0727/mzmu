@@ -80,7 +80,7 @@ define(function(mu) {
             // 完整的URL地址
             source: parser.href,
             // URL协议(不带:)
-            protocol: (parser.protocol || l.protocol ).replace(/\:$/, ''),
+            protocol: parser.protocol || l.protocol,
             // 当前作用域
             host: parser.host,
             // 域名
