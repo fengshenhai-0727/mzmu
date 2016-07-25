@@ -62,7 +62,7 @@
 
     mu.is = {};
 
-    mu.verison = '1.7.5';
+    mu.verison = '1.7.7';
 
 
 //})()
@@ -397,7 +397,9 @@
                 if(isDeep) {
                     src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
                 } else {
-                    src[kk] = oo;
+                    if(src[kk] !== oo) {
+                        src[kk] = oo;
+                    }
                 }
             });
         });
@@ -1281,6 +1283,104 @@
     };
 
     /**
+     * mu.intersect(Array arr...)
+     * 获取数组的交集
+     * @param arr1
+     * @param arr2
+     * @returns {Array}
+     *
+     * PS: 产生交集的数组应该为不重复元素构成的数组
+     */
+    mu.intersect = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
+        var args = _.args(arguments), arr = [];
+
+        if(args.length < 2) {
+            return arr;
+        }
+
+        arr1 = _.unique(args.shift() || []);
+        arr2 = _.unique(args.shift() || []);
+
+        _.each(arr1, function(o){
+            if(_.indexOf(arr2, o) > -1){
+                arr.push(o);
+            }
+        });
+
+        if(args.length > 0) {
+            args.unshift(arr);
+            return _.intersect.apply(null, args);
+        } else {
+            return arr;
+        }
+    };
+
+    /**
+     * mu.union(Array arr1...)
+     * 两个集合的并集
+     * @param arr1
+     * @param arr2
+     * @returns {{array}}
+     */
+    mu.union = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+        var args = _.args(arguments), arr = [];
+
+        _.each(args, function(o){
+            arr = arr.concat(o);
+        });
+
+        return _.unique(arr);
+    };
+
+    /**
+     * mu.minus(Array arr...)
+     * 两个集合的差集
+     * @param arr1
+     * @param arr2
+     * @returns {{array}}
+     *
+     * @PS: 记A，B是两个集合，则所有属于A且不属于B的元素构成的集合
+     */
+    mu.minus = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+        var args = _.args(arguments), arr = [];
+
+        if(args.length < 2) {
+            return arr;
+        }
+
+        arr1 = _.unique(args.shift() || []);
+        arr2 = _.unique(args.shift() || []);
+
+        _.each(arr1, function(o){
+            if(_.indexOf(arr2, o) === -1){
+                arr.push(o);
+            }
+        });
+
+        if(args.length > 0) {
+            args.unshift(arr);
+            return _.minus.apply(null, args);
+        } else {
+            return arr;
+        }
+    };
+
+    /**
+     * mu.complement(Array arr1, Array arr2)
+     * 两个集合的余集(模糊余集)
+     * @param arr1
+     * @param arr2
+     * @returns {{array}}
+     *
+     * @PS: 模糊余集: 两个集合的并集 - 两个集合的交集
+     */
+    mu.complement = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+        var args = _.args(arguments);
+        return _.minus(_.union.apply(null, args), _.intersect.apply(null, args));
+    };
+
+
+    /**
      * mu.clean(Array arr, Int level)
      * @param arr
      * @param level
@@ -1296,13 +1396,13 @@
             1: _.isUndefined,
             2: _.isNotExist,
             3: _.isIf,
-            4:_.isEmpty
+            4: _.isEmpty
         };
 
-        return _.map(arr, function(v){
-            if(fn[level](v)){
+        return _.map(arr, function(v) {
+            if(fn[level](v)) {
                 return C.REMOVE_MAP;
-            }else{
+            } else {
                 return v;
             }
         });
@@ -1316,7 +1416,7 @@
      * @param index
      * @returns {{array}}
      */
-    mu.insert = function(/**{array}*/ arr, /**{any}*/ val, /**{int}*/ index){
+    mu.insert = function(/**{array}*/ arr, /**{any}*/ val, /**{int}*/ index) {
         var l = arr.length;
         index = index > l ? l : index < 0 ? 0 : index || 0;
         arr.splice(index, 0, val);
@@ -1330,11 +1430,11 @@
      * @param item
      * @returns {{int}}
      */
-    mu.indexOf = function(/**{array}*/ arr, /**{any}*/ item){
+    mu.indexOf = function(/**{array}*/ arr, /**{any}*/ item) {
         item = _.toStringWithType(item);
         var index = -1;
-        _.each(arr, function(v, i){
-            if(item === _.toStringWithType(v)){
+        _.each(arr, function(v, i) {
+            if(item === _.toStringWithType(v)) {
                 index = i;
                 return false;
             }
@@ -1342,13 +1442,6 @@
 
         return index;
     };
-
-
-
-
-
-
-
 
 
 
@@ -2255,7 +2348,7 @@
      */
     mu.deepDecodeURIComponent = function(/**{string}*/ str){
         _.each(str.split('%'), function(){
-            str = decodeURIComponent(v);
+            str = decodeURIComponent(str);
         });
 
         return str;
@@ -2320,7 +2413,7 @@
             // 完整的URL地址
             source: parser.href,
             // URL协议(不带:)
-            protocol: (parser.protocol || l.protocol ).replace(/\:$/, ''),
+            protocol: parser.protocol || l.protocol,
             // 当前作用域
             host: parser.host,
             // 域名

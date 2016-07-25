@@ -15,7 +15,7 @@ define(function(mu) {
      */
     mu.deepDecodeURIComponent = function(/**{string}*/ str){
         _.each(str.split('%'), function(){
-            str = decodeURIComponent(v);
+            str = decodeURIComponent(str);
         });
 
         return str;

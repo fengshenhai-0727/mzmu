@@ -169,7 +169,9 @@ define([], function(mu) {
                 if(isDeep) {
                     src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
                 } else {
-                    src[kk] = oo;
+                    if(src[kk] !== oo) {
+                        src[kk] = oo;
+                    }
                 }
             });
         });
