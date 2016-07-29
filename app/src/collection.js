@@ -249,36 +249,78 @@ define(function(mu) {
 
 
     // mu.get
-     
-     // todo pick
-    // mu.pick = function(/**Object*/ collect, /**Function*/ fn, /**Object|Array*/ initData, /**Object*/ context){
-    //     var rst;
 
-    //     _.run(initData, function(data){
-    //         rst = data;
-    //     }, function(){
-    //         rst = _.isObject(collect) ? {} : [];
-    //     });
+    function __objPick__ (/**{object}*/ obj, /**{string}...*/ key){
+        var args = _.args(arguments);
+        var rst = {};
+        obj = args.shift();
 
-    //     _.each(collect, function(item, i){
-    //         var cb = fn.call(context, item, i);
+        _.each(args, function(key){
+            if(Object.prototype.hasOwnProperty.call(obj, key)){
+                rst[key] = obj[key];
+            }
+        });
 
-    //         if(cb){
+        return rst;
+    }
 
-
-
-    //         }
-
-
-    //     });
+    function __arrPick__ (/**{array}*/ arr, /**{string|number}...*/ key){
+        var args = _.args(arguments);
+        arr = args.shift();
+        key = args[0];
 
 
+        return _.run(mu.isNumeric(key), function(){
+            var rst = [];
 
+            _.each(args, function(k){
+                if(_.isNumeric(k)){
+                    rst.push(arr[k]);
+                }
+            });
 
+            return rst;
 
+        }, function(){
+            return _.map(arr, function(o){
+                var __args__ = _.extend([], args);
+                __args__.unshift(o);
+                return __objPick__.apply(null, __args__);
+            });
+        });
+    }
 
+    /**
+     * mu.pick(Array arr, Int index...)
+     * mu.pick(Object obj, String key...)
+     * mu.pick(Array arr, String key...)
+     *
+     * 从原来的集合中, 摘除部分项, 组成新的集合
+     *
+     * @param o
+     * @param key
+     * @returns {*}
+     */
 
-    // }; 
+    /**
+     * ex.
+     *
+     * mu.pick([1,3,4,5,6], 1, 3, 5)
+     * //=> [3, 5, undefined]
+     *
+     * mu.pick([{a:1, b:2, c: 4}, {a:2}, {c:3}], 'a', 'b')
+     * //=>[{a:1, b:2}, {a:2}, {}]
+     *
+     * mu.pick({a:1, b:2, c:3, d:4}, 'c', 'd', 'e')
+     * //=> {c:3, d:4}
+     */
+    mu.pick = function(/**{object|array}*/ o, /**{string|number}...*/ key ){
+        if(_.isObject(o)){
+            return __objPick__.apply(null, arguments);
+        }else{
+            return __arrPick__.apply(null, arguments);
+        }
+    };
 
 
     return mu;
