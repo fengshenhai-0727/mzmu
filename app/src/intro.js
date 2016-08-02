@@ -62,7 +62,7 @@
 
     mu.is = {};
 
-    mu.verison = '1.8.8';
+    mu.verison = '1.7.9';
 
 
 //})()

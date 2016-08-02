@@ -62,7 +62,7 @@
 
     mu.is = {};
 
-    mu.verison = '1.8.8';
+    mu.verison = '1.7.9';
 
 
 //})()
@@ -1071,7 +1071,12 @@
      * @returns {{any}}
      */
     mu.copy = function(/**{any}*/ any) {
-        return _.extend({}, any);
+
+        if(typeof any !== 'object'){
+            return any;
+        }
+
+        return _.isArray(any) ? any.slice() : _.extend({}, any);
     };
 
     /**
