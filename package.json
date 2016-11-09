@@ -1,7 +1,6 @@
 {
-    "name": "MU",
-    "version": "1.7",
-    "private": true,
+    "name": "mzmu",
+    "version": "1.8.0",
     "description": "MU",
     "author": "mizi",
     "repository": {
@@ -42,7 +41,7 @@
         "load-grunt-tasks": "~0.4.0",
         "time-grunt": "~0.3.1"
     },
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/amily4555/mu/issues"
     },
