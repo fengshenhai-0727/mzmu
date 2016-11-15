@@ -2434,7 +2434,7 @@
      * return obj
      */
     mu.param2Obj = function(/**{string}*/ param){
-        if(param){
+        if(!param){
             return {};
         }
 
