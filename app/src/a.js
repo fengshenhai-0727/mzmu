@@ -54,7 +54,12 @@ define(function(mu) {
      * return obj
      */
     mu.param2Obj = function(/**{string}*/ param){
+        if(param){
+            return {};
+        }
+
         var p = param.split('&');
+
         return mu.map(p, function(kv){
             var __kv__ = kv.split('=');
             return {
