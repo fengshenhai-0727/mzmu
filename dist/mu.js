@@ -245,7 +245,7 @@
         switch(_.type(any)) {
             case 'number':
                 while(i < any) {
-                    if(fn.call(context, i, i + 1, any) === false) {
+                    if(fn.call(context, i + 1, i, any) === false) {
                         break;
                     }
 
