@@ -109,6 +109,9 @@ define([], function(mu) {
 
         var rst = initData ? initData : _.isArrayLike(obj) ? [] : {};
 
+        // 防止源对象被属性值被改写
+        obj = _.clone(obj);
+
         _.each(obj, function(v, k) {
             var cb = fn.call(context, v, k, obj);
 

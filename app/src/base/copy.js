@@ -11,11 +11,9 @@ define(['./iterator'], function(mu) {
      * @returns {{any}}
      */
     mu.copy = function(/**{any}*/ any) {
-
         if(typeof any !== 'object'){
             return any;
         }
-
         return _.isArray(any) ? any.slice() : _.extend({}, any);
     };
 
@@ -26,7 +24,11 @@ define(['./iterator'], function(mu) {
      * @returns {{any}}
      */
     mu.clone = function(/**{any}*/ any) {
-        return _.extend(true, {}, any);
+        var b = {
+            b: any
+        };
+        b = _.extend(true, {}, b);
+        return b.b;
     };
 
     return mu;
