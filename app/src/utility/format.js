@@ -41,7 +41,7 @@ define([
         switch(_.type(src)) {
             // 字符串替换 String.format
             case 'string':
-                _.run(args, function() {
+                return _.run(args, function() {
                     if(args.length === 1 && mu.isObject(args[0])){
                         return src.replace(/\{(.*?)\}/g, function(m, i) {
                             return _.prop(args[0], i) || m;
@@ -51,6 +51,8 @@ define([
                             return args[i] || m;
                         });
                     }
+                }, function(){
+                    return src;
                 });
 
                 break;
@@ -99,6 +101,8 @@ define([
                 return format;
 
             // 将数字转为科学计数法, 输出字符串
+            // todo -> percent
+            // todo -> substr decimal length
             case 'number':
                 return numfomart(src + '');
         }
