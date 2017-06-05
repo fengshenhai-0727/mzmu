@@ -2178,20 +2178,24 @@
 
         src = args.shift();
 
-        var numfomart = function(str){
-            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g,',$1');
+        var numfomart = function(str) {
+            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
         };
 
-        switch( _.type(src) ){
+        switch(_.type(src)) {
             // 字符串替换 String.format
             case 'string':
-                if(_.isEmpty(args)){
-                    return numfomart(src);
-                }else{
-                    return src.replace(/\{(\d+)\}/g, function(m, i) {
-                        return args[i] || m;
-                    });
-                }
+                _.run(args, function() {
+                    if(args.length === 1 && mu.isObject(args[0])){
+                        return src.replace(/\{(.*?)\}/g, function(m, i) {
+                            return _.prop(args[0], i) || m;
+                        });
+                    } else {
+                        return src.replace(/\{(\d+)\}/g, function(m, i) {
+                            return args[i] || m;
+                        });
+                    }
+                });
 
                 break;
             // 日期按既定格式输出字符串 dateformat
@@ -2208,31 +2212,31 @@
                     S = src.getMilliseconds();
 
                 var dateVals = [
-                    {key: 'y{4}',  val: y},
-                    {key: 'y{2}',  val: _.leftpad(y % 100, 2)},
-                    {key: 'q',  val: q},
-                    {key: 'M{2}',  val: _.leftpad(M,2)},
-                    {key: 'M',  val: M},
-                    {key: 'w',  val: w},
-                    {key: 'd{2}',  val: _.leftpad(d,2)},
-                    {key: 'd',  val: d},
-                    {key: 'h{2}',  val: _.leftpad(h,2)},
-                    {key: 'h',  val: h},
-                    {key: 'm{2}',  val: _.leftpad(m,2)},
-                    {key: 'm',  val: m},
-                    {key: 's{2}',  val: _.leftpad(s,2)},
-                    {key: 's',  val: s},
-                    {key: 'S{2}',  val: S}
+                    {key: 'y{4}', val: y},
+                    {key: 'y{2}', val: _.leftpad(y % 100, 2)},
+                    {key: 'q', val: q},
+                    {key: 'M{2}', val: _.leftpad(M, 2)},
+                    {key: 'M', val: M},
+                    {key: 'w', val: w},
+                    {key: 'd{2}', val: _.leftpad(d, 2)},
+                    {key: 'd', val: d},
+                    {key: 'h{2}', val: _.leftpad(h, 2)},
+                    {key: 'h', val: h},
+                    {key: 'm{2}', val: _.leftpad(m, 2)},
+                    {key: 'm', val: m},
+                    {key: 's{2}', val: _.leftpad(s, 2)},
+                    {key: 's', val: s},
+                    {key: 'S{2}', val: S}
                 ];
 
                 format = args.shift() || '';
 
-                if(!format){
+                if(!format) {
                     return '';
                 }
 
-                _.each(dateVals, function(o){
-                    var reg = new RegExp('('+ o.key +')', 'g');
+                _.each(dateVals, function(o) {
+                    var reg = new RegExp('(' + o.key + ')', 'g');
                     format = format.replace(reg, o.val);
                 });
 
