@@ -17,7 +17,7 @@ define([], function(mu) {
         switch(_.type(any)) {
             case 'number':
                 while(i < any) {
-                    if(fn.call(context, i + 1, i, any) === false) {
+                    if(fn.call(context, i + 1, i, i, any) === false) {
                         break;
                     }
 
@@ -28,7 +28,7 @@ define([], function(mu) {
             case 'string':
 
                 for(var l = any.length; i < l; i++) {
-                    if(fn.call(context, any[i], i, any) === false) {
+                    if(fn.call(context, any[i], i, i, any) === false) {
                         break;
                     }
                 }
@@ -40,15 +40,17 @@ define([], function(mu) {
                 // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
                 // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
                 // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
-                for(i in any) {
+
+                var key;
+                for(key in any) {
                     if(any.hasOwnProperty(i)) {
-                        if(fn.call(context, any[i], i, any) === false) {
+                        if(fn.call(context, any[key], key, i, any) === false) {
                             break;
                         }
+
+                        i ++;
                     }
                 }
-
-
 
                 break;
         }
@@ -131,6 +133,11 @@ define([], function(mu) {
         return rst;
 
     };
+
+    // todo
+    // mu.form => array.form
+    // mu.form({0, 1, 2, length})
+    // mu.form({a: {index: 0}, b: {index: 1}})
 
     /**
      * mu.extend([Boolean isDeep,] Object src, Object ...target)

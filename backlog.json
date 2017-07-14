@@ -8,5 +8,7 @@
     "1.8.4": "修正mu.each中遍历数字时, callback参数次序的问题",
     "1.8.5": "mu.map, source对象在遍历中, 属性值将被深拷贝, 不可修改其值, 其结果也应该为新的对象或数组, 没有多余的内存指向 \n 修正mu.clone的bug, 支持数组的深拷贝",
     "1.8.6": "mu.format 1.修正字符串无参数时转为数字格式化, 2. 修正字符串按对象属性值format",
-    "1.8.7": "修正 mu.format string bugs"
+    "1.8.7": "修正 mu.format string bugs",
+    "1.8.8": "1. mu.each(cb), mu.map(cb) 的回调函数 cb 添加一个默认值 index: 执行顺序",
+    "1.8.9": "1. 修正mu.vals, mu.format的bug, 2. 丰富 mu.format 数字功能, 可以转为千分数显示, 百分比, 千分比显示, 截取小数位数, 以及进一法, 四舍五入, 退一法等"
 }

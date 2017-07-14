@@ -245,7 +245,7 @@
         switch(_.type(any)) {
             case 'number':
                 while(i < any) {
-                    if(fn.call(context, i + 1, i, any) === false) {
+                    if(fn.call(context, i + 1, i, i, any) === false) {
                         break;
                     }
 
@@ -256,7 +256,7 @@
             case 'string':
 
                 for(var l = any.length; i < l; i++) {
-                    if(fn.call(context, any[i], i, any) === false) {
+                    if(fn.call(context, any[i], i, i, any) === false) {
                         break;
                     }
                 }
@@ -268,15 +268,17 @@
                 // propertyIsEnumerable 判断给定的属性是否可以用 for...in 语句进行枚举
                 // hasOwnProperty(property) 判断对象是否有某个特定的属性。必须用字符串指定该属性
                 // !!! 不考虑 {toString: null}.propertyIsEnumerable('toString') === false 的情况
-                for(i in any) {
+
+                var key;
+                for(key in any) {
                     if(any.hasOwnProperty(i)) {
-                        if(fn.call(context, any[i], i, any) === false) {
+                        if(fn.call(context, any[key], key, i, any) === false) {
                             break;
                         }
+
+                        i ++;
                     }
                 }
-
-
 
                 break;
         }
@@ -359,6 +361,11 @@
         return rst;
 
     };
+
+    // todo
+    // mu.form => array.form
+    // mu.form({0, 1, 2, length})
+    // mu.form({a: {index: 0}, b: {index: 1}})
 
     /**
      * mu.extend([Boolean isDeep,] Object src, Object ...target)
@@ -1456,7 +1463,6 @@
 
 
 
-
     //@page object.js
 
     /**
@@ -2153,12 +2159,16 @@
      * mu.format()
      * 各种类型的值, 格式化成字符串
      * @param src
+     * @param method
      * @returns {*}
      *
      * exp.
      *
      * mu.format('Hello {0}, {1}!', 'Mizi', 'Welcome')
      * // -> "Hello Mizi, Welcome!"
+     *
+     *  mu.format('Hello {name}, {word}!', {name: 'mizi', word: 'welcome'})
+     *  // -> Hello mizi, welcome!
      *
      * mu.format( new Date(1458114893684),  'yyyy年MM月dd日 hh:mm:ss SS 第q季度 星期w')
      * // -> "2016年03月16日 15:54:53 684684 第1季度 星期3"
@@ -2169,10 +2179,10 @@
      * mu.format(1234567890)
      * // '1,234,567,890'
      *
-     * mu.format('1234567890.1234')
+     * mu.format(1234567890.1234)
      * '1,234,567,890.1234'
      */
-    mu.format = function(/**{any}*/ src) {
+    mu.format = function(/**{any}*/ src, /**{string, number}*/ method) {
         var args = _.args(arguments);
         var format;
 
@@ -2186,16 +2196,16 @@
             // 字符串替换 String.format
             case 'string':
                 return _.run(args, function() {
-                    if(args.length === 1 && mu.isObject(args[0])){
+                    if(args.length === 1 && mu.isObject(args[0])) {
                         return src.replace(/\{(.*?)\}/g, function(m, i) {
-                            return _.prop(args[0], i) || m;
+                            return _.ifnvl(_.prop(args[0], i), m);
                         });
                     } else {
                         return src.replace(/\{(\d+)\}/g, function(m, i) {
-                            return args[i] || m;
+                            return _.ifnvl(args[i], m);
                         });
                     }
-                }, function(){
+                }, function() {
                     return src;
                 });
 
@@ -2245,10 +2255,54 @@
                 return format;
 
             // 将数字转为科学计数法, 输出字符串
+            // 科学计数法为整数
             // todo -> percent
             // todo -> substr decimal length
             case 'number':
-                return numfomart(src + '');
+                /**
+                 * method
+                 * 'fn:type:count'
+                 */
+                method = method || '';
+                var mds = method.split(':');
+                var fn = mds[0] || 'round';
+                var count, size, pow, rst;
+
+                switch(mds.length) {
+                    // 数字千分位 (若是小数 默认四舍五入)
+                    case 1:
+                        return numfomart(Math[fn](src).toString());
+                    // 截取小数位数, 默认四舍五入
+                    // 可强制截取小数位数, 如, 10 -> 10.00
+                    // 当size为负数时 , 保留强制保留小数位数
+                    case 2:
+                        count = mds[1];
+                        size = Math.abs(count);
+                        pow = Math.pow(10, size);
+                        rst = Math[fn](src * pow);
+
+                        if(count < 0) {
+                            var reg = new RegExp('(?=(?!^)(?:))(\\\d{' + size + '}$)', 'g');
+                            rst = rst || _.leftpad(0, size + 1);
+                            return rst.toString().replace(reg, '.$1');
+                        } else {
+                            return (rst / pow).toString();
+                        }
+
+                    // 化成百分数(percent) 或 千分数(permille)
+                    case 3:
+                        var sign = mds[1] || 'percent';
+                        count = mds[2];
+
+                        var method_ = fn + ':' + count;
+
+                        if(sign === 'percent'){
+                            return _.format(src * 100, method_) + '%';
+                        } else if(sign === 'permile') {
+                            return _.format(src * 1000, method_) + '‰';
+                        }
+
+                }
         }
     };
 
