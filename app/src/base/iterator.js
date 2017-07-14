@@ -43,7 +43,7 @@ define([], function(mu) {
 
                 var key;
                 for(key in any) {
-                    if(any.hasOwnProperty(i)) {
+                    if(any.hasOwnProperty(key)) {
                         if(fn.call(context, any[key], key, i, any) === false) {
                             break;
                         }

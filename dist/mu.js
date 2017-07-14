@@ -271,7 +271,7 @@
 
                 var key;
                 for(key in any) {
-                    if(any.hasOwnProperty(i)) {
+                    if(any.hasOwnProperty(key)) {
                         if(fn.call(context, any[key], key, i, any) === false) {
                             break;
                         }
@@ -1534,7 +1534,7 @@
      * @returns {Array}
      */
     mu.vals = function(/**{object}*/ obj){
-        return _.map(obj, function(key, val){
+        return _.map(obj, function(val, key){
             return val;
         }, []);
     };

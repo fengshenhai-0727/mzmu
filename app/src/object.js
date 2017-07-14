@@ -71,7 +71,7 @@ define(function(mu) {
      * @returns {Array}
      */
     mu.vals = function(/**{object}*/ obj){
-        return _.map(obj, function(key, val){
+        return _.map(obj, function(val, key){
             return val;
         }, []);
     };
