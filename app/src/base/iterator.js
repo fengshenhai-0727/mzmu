@@ -48,7 +48,7 @@ define([], function(mu) {
                             break;
                         }
 
-                        i ++;
+                        i++;
                     }
                 }
 
@@ -173,18 +173,37 @@ define([], function(mu) {
         if(typeof src !== 'object') {
             return src;
         }
-
+        var sval, tval;
+        var key;
         _.each(args, function(target) {
-            _.each(target, function(oo, kk) {
-                if(isDeep) {
-                    src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
-                } else {
-                    if(src[kk] !== oo) {
-                        src[kk] = oo;
-                    }
+            for(key in target) {
+                sval = src[key];
+                tval = target[key];
+
+                if(sval === tval) {
+                    continue;
                 }
-            });
+                if(isDeep && tval && (_.isPlainObject(tval) || _.isArray(tval) )) {
+                    src[key] = _.extend(true, sval || _.reorigin(tval), tval);
+                } else if(target !== undefined) {
+                    src[key] = tval;
+                }
+
+            }
         });
+
+
+        // _.each(args, function(target) {
+        //     _.each(target, function(oo, kk) {
+        //         if(isDeep) {
+        //             src[kk] = typeof oo === 'object' ? _.extend(true, src[kk] || _.reorigin(oo), oo) : oo;
+        //         } else {
+        //             if(src[kk] !== oo) {
+        //                 src[kk] = oo;
+        //             }
+        //         }
+        //     });
+        // });
 
         return src;
     };
