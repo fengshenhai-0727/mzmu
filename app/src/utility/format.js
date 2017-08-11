@@ -14,23 +14,55 @@ define([
      *
      * exp.
      *
+     * ::: 字符串格式化
      * mu.format('Hello {0}, {1}!', 'Mizi', 'Welcome')
      * // -> "Hello Mizi, Welcome!"
      *
      *  mu.format('Hello {name}, {word}!', {name: 'mizi', word: 'welcome'})
      *  // -> Hello mizi, welcome!
      *
+     * ::: 时间格式化
      * mu.format( new Date(1458114893684),  'yyyy年MM月dd日 hh:mm:ss SS 第q季度 星期w')
      * // -> "2016年03月16日 15:54:53 684684 第1季度 星期3"
      *
      * mu.format( new Date(1458114893684),  'yy年M月d日 h:m:s SS 第q季度 星期w')
      * // -> "16年3月16日 15:54:53 684 第1季度 星期3"
      *
+     * ::: 数字千分位
      * mu.format(1234567890)
-     * // '1,234,567,890'
+     * // -> '1,234,567,890'
      *
-     * mu.format(1234567890.1234)
-     * '1,234,567,890.1234'
+     * mu.format(1234567890.5234)
+     * // -> '1,234,567,890.5234'
+     *
+     * mu.format(1234567890.5234, 'round')
+     * // -> "1,234,567,891"
+     *
+     * ::: 截取小数点长度
+     * mu.format(0.5264, ':2')
+     * // -> '0.53'
+     *
+     * mu.format(0.5264, 'floor:2')
+     * // -> 0.52
+     *
+     * mu.format(0, ':2')
+     * // -> '0'
+     *
+     * mu.format(0, ':-2')
+     * // -> '0.00'
+     *
+     * ::: 百分比/千分比
+     * mu.format(1.2365, '::')
+     * // -> "124%"
+     *
+     * mu.format(1.2365, '::5')
+     * // -> "123.65%"
+     *
+     * mu.format(1.2365, '::-5')
+     * // -> "123.65000%"
+     *
+     * mu.format(1.2365, 'round:permile:2')
+     * // -> "1236.5‰"
      */
     mu.format = function(/**{any}*/ src, /**{string, number}*/ method) {
         var args = _.args(arguments);
@@ -39,7 +71,8 @@ define([
         src = args.shift();
 
         var numfomart = function(str) {
-            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
+            var reg = str.indexOf('.') > -1 ? /(\d{1,3})(?=(?:\d{3})+\.)/g : /(\d{1,3})(?=(?:\d{3})+$)/g;
+            return str.replace(reg, '$1,');
         };
 
         switch(_.type(src)) {
@@ -111,21 +144,30 @@ define([
             case 'number':
                 /**
                  * method
-                 * 'fn:type:count'
+                 * 千分位 fn
+                 * 截取小数位数 fn:count
+                 * 百分比/千分比 fn:type:count
+                 *
+                 * fn: Math 的方法名
+                 * type: percent | permile
+                 * count: int
+                 *
+                 * ps: count为负数时则为强制显示小数位数 如 10 -> 10.00
                  */
                 method = method || '';
                 var mds = method.split(':');
-                var fn = mds[0] || 'round';
+                var fn = mds[0];
                 var count, size, pow, rst;
 
                 switch(mds.length) {
-                    // 数字千分位 (若是小数 默认四舍五入)
                     case 1:
-                        return numfomart(Math[fn](src).toString());
+                        src = fn ? Math[fn](src) : src;
+                        return numfomart(src.toString());
                     // 截取小数位数, 默认四舍五入
                     // 可强制截取小数位数, 如, 10 -> 10.00
                     // 当size为负数时 , 保留强制保留小数位数
                     case 2:
+                        fn = fn || 'round';
                         count = mds[1];
                         size = Math.abs(count);
                         pow = Math.pow(10, size);
@@ -134,19 +176,21 @@ define([
                         if(count < 0) {
                             var reg = new RegExp('(?=(?!^)(?:))(\\\d{' + size + '}$)', 'g');
                             rst = rst || _.leftpad(0, size + 1);
-                            return rst.toString().replace(reg, '.$1');
+                            return rst.toString()
+                                .replace(reg, '.$1');
                         } else {
                             return (rst / pow).toString();
                         }
 
                     // 化成百分数(percent) 或 千分数(permille)
                     case 3:
+                        fn = fn || 'round';
                         var sign = mds[1] || 'percent';
                         count = mds[2];
 
                         var method_ = fn + ':' + count;
 
-                        if(sign === 'percent'){
+                        if(sign === 'percent') {
                             return _.format(src * 100, method_) + '%';
                         } else if(sign === 'permile') {
                             return _.format(src * 1000, method_) + '‰';

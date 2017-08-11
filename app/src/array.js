@@ -132,8 +132,8 @@ define(function(mu) {
         arr1 = _.unique(args.shift() || []);
         arr2 = _.unique(args.shift() || []);
 
-        _.each(arr1, function(o){
-            if(_.indexOf(arr2, o) > -1){
+        _.each(arr1, function(o) {
+            if(_.indexOf(arr2, o) > -1) {
                 arr.push(o);
             }
         });
@@ -153,10 +153,10 @@ define(function(mu) {
      * @param arr2
      * @returns {{array}}
      */
-    mu.union = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.union = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments), arr = [];
 
-        _.each(args, function(o){
+        _.each(args, function(o) {
             arr = arr.concat(o);
         });
 
@@ -172,7 +172,7 @@ define(function(mu) {
      *
      * @PS: 记A，B是两个集合，则所有属于A且不属于B的元素构成的集合
      */
-    mu.minus = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.minus = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments), arr = [];
 
         if(args.length < 2) {
@@ -182,8 +182,8 @@ define(function(mu) {
         arr1 = _.unique(args.shift() || []);
         arr2 = _.unique(args.shift() || []);
 
-        _.each(arr1, function(o){
-            if(_.indexOf(arr2, o) === -1){
+        _.each(arr1, function(o) {
+            if(_.indexOf(arr2, o) === -1) {
                 arr.push(o);
             }
         });
@@ -205,7 +205,7 @@ define(function(mu) {
      *
      * @PS: 模糊余集: 两个集合的并集 - 两个集合的交集
      */
-    mu.complement = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.complement = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments);
         return _.minus(_.union.apply(null, args), _.intersect.apply(null, args));
     };
@@ -273,5 +273,82 @@ define(function(mu) {
 
         return index;
     };
+
+    /**
+     * mu.groupArray(Array arr)
+     *
+     * @param arr
+     */
+    mu.groupArray = function(/**{array}*/ arr) {
+
+        var _group = function(arr, key) {
+            return arr.reduce(function(prev, item) {
+                var g = _.prop(item, key);
+                if(g in prev) {
+                    prev[g].push(item);
+                } else {
+                    prev[g] = [item];
+                }
+                return prev;
+            }, {});
+        };
+
+        var _recursion = function(key, o, k) {
+            if(_.isArray(o)) {
+                return _group(o, key);
+            } else {
+                return _.map(o, function(oo, kk) {
+                    return _recursion(key, oo, kk);
+                });
+            }
+        };
+
+        var args = _.args(arguments);
+        arr = args.shift();
+        var keys = args;
+        var key = keys.shift();
+        var rst = _group(arr, key);
+        for(var i = 0; i < keys.length; i++) {
+            rst = _.map(rst, function(o, k) {
+                return _recursion(keys[i], o, k);
+            });
+        }
+
+        return rst;
+
+    }
+
+
+    // group(arr: any[], key: string): any {
+    //     return arr.reduce(function (prev: any, item: any): any {
+    //         let g = mu.prop(item, key);
+    //         if (g in prev) {
+    //             prev[g].push(item);
+    //         } else {
+    //             prev[g] = [item];
+    //         }
+    //         return prev;
+    //     }, {});
+    // }
+    //
+    // groupArray(arr: any[], ...keys: string[]): any {
+    //     let recursion = (key, o, k) => {
+    //         if (mu.isArray(o)) {
+    //             return this.group(o, key);
+    //         } else {
+    //             return mu.map(o, (oo, kk) => {
+    //                 return recursion(key, oo, kk);
+    //         });
+    //         }
+    //     };
+    //     let key = keys.shift();
+    //     let rst = this.group(arr, key);
+    //     for (let i = 0; i < keys.length; i++) {
+    //         rst = mu.map(rst, (o, k) => {
+    //             return recursion(keys[i], o, k);
+    //     });
+    //     }
+    //     return rst;
+    // }
 
 });

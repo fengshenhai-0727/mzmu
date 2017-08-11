@@ -401,12 +401,9 @@
         if(typeof src !== 'object') {
             return src;
         }
-
         var sval, tval;
-
         var key;
         _.each(args, function(target) {
-
             for(key in target) {
                 sval = src[key];
                 tval = target[key];
@@ -414,7 +411,6 @@
                 if(sval === tval) {
                     continue;
                 }
-
                 if(isDeep && tval && (_.isPlainObject(tval) || _.isArray(tval) )) {
                     src[key] = _.extend(true, sval || _.reorigin(tval), tval);
                 } else if(target !== undefined) {
@@ -422,8 +418,6 @@
                 }
 
             }
-
-
         });
 
 
@@ -1343,8 +1337,8 @@
         arr1 = _.unique(args.shift() || []);
         arr2 = _.unique(args.shift() || []);
 
-        _.each(arr1, function(o){
-            if(_.indexOf(arr2, o) > -1){
+        _.each(arr1, function(o) {
+            if(_.indexOf(arr2, o) > -1) {
                 arr.push(o);
             }
         });
@@ -1364,10 +1358,10 @@
      * @param arr2
      * @returns {{array}}
      */
-    mu.union = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.union = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments), arr = [];
 
-        _.each(args, function(o){
+        _.each(args, function(o) {
             arr = arr.concat(o);
         });
 
@@ -1383,7 +1377,7 @@
      *
      * @PS: 记A，B是两个集合，则所有属于A且不属于B的元素构成的集合
      */
-    mu.minus = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.minus = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments), arr = [];
 
         if(args.length < 2) {
@@ -1393,8 +1387,8 @@
         arr1 = _.unique(args.shift() || []);
         arr2 = _.unique(args.shift() || []);
 
-        _.each(arr1, function(o){
-            if(_.indexOf(arr2, o) === -1){
+        _.each(arr1, function(o) {
+            if(_.indexOf(arr2, o) === -1) {
                 arr.push(o);
             }
         });
@@ -1416,7 +1410,7 @@
      *
      * @PS: 模糊余集: 两个集合的并集 - 两个集合的交集
      */
-    mu.complement = function(/**{array}*/ arr1, /**{array...}*/ arr2){
+    mu.complement = function(/**{array}*/ arr1, /**{array...}*/ arr2) {
         var args = _.args(arguments);
         return _.minus(_.union.apply(null, args), _.intersect.apply(null, args));
     };
@@ -1484,6 +1478,83 @@
 
         return index;
     };
+
+    /**
+     * mu.groupArray(Array arr)
+     *
+     * @param arr
+     */
+    mu.groupArray = function(/**{array}*/ arr) {
+
+        var _group = function(arr, key) {
+            return arr.reduce(function(prev, item) {
+                var g = _.prop(item, key);
+                if(g in prev) {
+                    prev[g].push(item);
+                } else {
+                    prev[g] = [item];
+                }
+                return prev;
+            }, {});
+        };
+
+        var _recursion = function(key, o, k) {
+            if(_.isArray(o)) {
+                return _group(o, key);
+            } else {
+                return _.map(o, function(oo, kk) {
+                    return _recursion(key, oo, kk);
+                });
+            }
+        };
+
+        var args = _.args(arguments);
+        arr = args.shift();
+        var keys = args;
+        var key = keys.shift();
+        var rst = _group(arr, key);
+        for(var i = 0; i < keys.length; i++) {
+            rst = _.map(rst, function(o, k) {
+                return _recursion(keys[i], o, k);
+            });
+        }
+
+        return rst;
+
+    }
+
+
+    // group(arr: any[], key: string): any {
+    //     return arr.reduce(function (prev: any, item: any): any {
+    //         let g = mu.prop(item, key);
+    //         if (g in prev) {
+    //             prev[g].push(item);
+    //         } else {
+    //             prev[g] = [item];
+    //         }
+    //         return prev;
+    //     }, {});
+    // }
+    //
+    // groupArray(arr: any[], ...keys: string[]): any {
+    //     let recursion = (key, o, k) => {
+    //         if (mu.isArray(o)) {
+    //             return this.group(o, key);
+    //         } else {
+    //             return mu.map(o, (oo, kk) => {
+    //                 return recursion(key, oo, kk);
+    //         });
+    //         }
+    //     };
+    //     let key = keys.shift();
+    //     let rst = this.group(arr, key);
+    //     for (let i = 0; i < keys.length; i++) {
+    //         rst = mu.map(rst, (o, k) => {
+    //             return recursion(keys[i], o, k);
+    //     });
+    //     }
+    //     return rst;
+    // }
 
 
 
@@ -2189,23 +2260,55 @@
      *
      * exp.
      *
+     * ::: 字符串格式化
      * mu.format('Hello {0}, {1}!', 'Mizi', 'Welcome')
      * // -> "Hello Mizi, Welcome!"
      *
      *  mu.format('Hello {name}, {word}!', {name: 'mizi', word: 'welcome'})
      *  // -> Hello mizi, welcome!
      *
+     * ::: 时间格式化
      * mu.format( new Date(1458114893684),  'yyyy年MM月dd日 hh:mm:ss SS 第q季度 星期w')
      * // -> "2016年03月16日 15:54:53 684684 第1季度 星期3"
      *
      * mu.format( new Date(1458114893684),  'yy年M月d日 h:m:s SS 第q季度 星期w')
      * // -> "16年3月16日 15:54:53 684 第1季度 星期3"
      *
+     * ::: 数字千分位
      * mu.format(1234567890)
-     * // '1,234,567,890'
+     * // -> '1,234,567,890'
      *
-     * mu.format(1234567890.1234)
-     * '1,234,567,890.1234'
+     * mu.format(1234567890.5234)
+     * // -> '1,234,567,890.5234'
+     *
+     * mu.format(1234567890.5234, 'round')
+     * // -> "1,234,567,891"
+     *
+     * ::: 截取小数点长度
+     * mu.format(0.5264, ':2')
+     * // -> '0.53'
+     *
+     * mu.format(0.5264, 'floor:2')
+     * // -> 0.52
+     *
+     * mu.format(0, ':2')
+     * // -> '0'
+     *
+     * mu.format(0, ':-2')
+     * // -> '0.00'
+     *
+     * ::: 百分比/千分比
+     * mu.format(1.2365, '::')
+     * // -> "124%"
+     *
+     * mu.format(1.2365, '::5')
+     * // -> "123.65%"
+     *
+     * mu.format(1.2365, '::-5')
+     * // -> "123.65000%"
+     *
+     * mu.format(1.2365, 'round:permile:2')
+     * // -> "1236.5‰"
      */
     mu.format = function(/**{any}*/ src, /**{string, number}*/ method) {
         var args = _.args(arguments);
@@ -2214,7 +2317,8 @@
         src = args.shift();
 
         var numfomart = function(str) {
-            return str.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
+            var reg = str.indexOf('.') > -1 ? /(\d{1,3})(?=(?:\d{3})+\.)/g : /(\d{1,3})(?=(?:\d{3})+$)/g;
+            return str.replace(reg, '$1,');
         };
 
         switch(_.type(src)) {
@@ -2286,21 +2390,30 @@
             case 'number':
                 /**
                  * method
-                 * 'fn:type:count'
+                 * 千分位 fn
+                 * 截取小数位数 fn:count
+                 * 百分比/千分比 fn:type:count
+                 *
+                 * fn: Math 的方法名
+                 * type: percent | permile
+                 * count: int
+                 *
+                 * ps: count为负数时则为强制显示小数位数 如 10 -> 10.00
                  */
                 method = method || '';
                 var mds = method.split(':');
-                var fn = mds[0] || 'round';
+                var fn = mds[0];
                 var count, size, pow, rst;
 
                 switch(mds.length) {
-                    // 数字千分位 (若是小数 默认四舍五入)
                     case 1:
-                        return numfomart(Math[fn](src).toString());
+                        src = fn ? Math[fn](src) : src;
+                        return numfomart(src.toString());
                     // 截取小数位数, 默认四舍五入
                     // 可强制截取小数位数, 如, 10 -> 10.00
                     // 当size为负数时 , 保留强制保留小数位数
                     case 2:
+                        fn = fn || 'round';
                         count = mds[1];
                         size = Math.abs(count);
                         pow = Math.pow(10, size);
@@ -2309,19 +2422,21 @@
                         if(count < 0) {
                             var reg = new RegExp('(?=(?!^)(?:))(\\\d{' + size + '}$)', 'g');
                             rst = rst || _.leftpad(0, size + 1);
-                            return rst.toString().replace(reg, '.$1');
+                            return rst.toString()
+                                .replace(reg, '.$1');
                         } else {
                             return (rst / pow).toString();
                         }
 
                     // 化成百分数(percent) 或 千分数(permille)
                     case 3:
+                        fn = fn || 'round';
                         var sign = mds[1] || 'percent';
                         count = mds[2];
 
                         var method_ = fn + ':' + count;
 
-                        if(sign === 'percent'){
+                        if(sign === 'percent') {
                             return _.format(src * 100, method_) + '%';
                         } else if(sign === 'permile') {
                             return _.format(src * 1000, method_) + '‰';
