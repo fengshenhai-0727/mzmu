@@ -169,6 +169,17 @@ define(function(mu) {
         return _.type(any) + '__' + any;
     };
 
+    /**
+     * mu.randomInt(min: number, max: number)
+     * 获取 [min, max]区间的随机整数
+     * @param min
+     * @param max
+     * @return {number}
+     */
+    mu.randomInt = function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+
     return mu;
 });
 
