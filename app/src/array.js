@@ -315,40 +315,19 @@ define(function(mu) {
         }
 
         return rst;
+    };
 
-    }
 
-
-    // group(arr: any[], key: string): any {
-    //     return arr.reduce(function (prev: any, item: any): any {
-    //         let g = mu.prop(item, key);
-    //         if (g in prev) {
-    //             prev[g].push(item);
-    //         } else {
-    //             prev[g] = [item];
-    //         }
-    //         return prev;
-    //     }, {});
-    // }
-    //
-    // groupArray(arr: any[], ...keys: string[]): any {
-    //     let recursion = (key, o, k) => {
-    //         if (mu.isArray(o)) {
-    //             return this.group(o, key);
-    //         } else {
-    //             return mu.map(o, (oo, kk) => {
-    //                 return recursion(key, oo, kk);
-    //         });
-    //         }
-    //     };
-    //     let key = keys.shift();
-    //     let rst = this.group(arr, key);
-    //     for (let i = 0; i < keys.length; i++) {
-    //         rst = mu.map(rst, (o, k) => {
-    //             return recursion(keys[i], o, k);
-    //     });
-    //     }
-    //     return rst;
-    // }
-
+    /**
+     * 顺时针旋转90°多维数组
+     * @param {any[]} arr
+     * @return {any[]}
+     */
+    mu.transpose = function(/** any[] */arr) {
+        return _.map(arr[0], function(v, i) {
+            return _.map(arr, function(items) {
+                return items[i];
+            });
+        });
+    };
 });
