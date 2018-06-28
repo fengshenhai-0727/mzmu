@@ -175,9 +175,17 @@ define([
 
                         if(count < 0) {
                             var reg = new RegExp('(?=(?!^)(?:))(\\\d{' + size + '}$)', 'g');
+
                             rst = rst || _.leftpad(0, size + 1);
+                            // 对 -1 < rst < 1 进行特殊处理
+                            if(rst > -pow && rst < pow) {
+                                rst = _.leftpad(rst, size + 2);
+                                rst = rst.replace(/(0+)(-)(.*)/, '$2$1$3');
+                            }
+
                             return rst.toString()
-                                .replace(reg, '.$1');
+                                .replace(reg, '.$1').replace(/^(0+?)\./, '0.');
+
                         } else {
                             return (rst / pow).toString();
                         }
