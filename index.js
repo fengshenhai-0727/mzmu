@@ -1,2 +1,9 @@
+'use strict';
+
 require('./dist/mu');
-module.exports = mu;
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+exports.default = mu;

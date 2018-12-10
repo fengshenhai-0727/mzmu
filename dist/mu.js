@@ -11,7 +11,7 @@
 //追隨大师（ follow the master,）
 //接近大师（ walk with the master,）
 //看穿大师（ see through the master,）
-//成为大师（ become the master.
+//成为大师（ become the master.)
 
 (function(window, undefined) {
    // 'use strict';
@@ -2412,10 +2412,7 @@
                         if(count < 0) {
                             var reg = new RegExp('(?=(?!^)(?:))(\\\d{' + size + '}$)', 'g');
 
-                            console.debug(rst);
-
                             rst = rst || _.leftpad(0, size + 1);
-
                             // 对 -1 < rst < 1 进行特殊处理
                             if(rst > -pow && rst < pow) {
                                 rst = _.leftpad(rst, size + 2);
