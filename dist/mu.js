@@ -217,11 +217,13 @@
 
         var reg = /\[object (Boolean|Number|String|Function|Array|Date|RegExp)\]/;
         var typeMap = objPro.toString.call(Object(any));
-        typeMap = reg.exec(typeMap);
+        typeMap = reg.exec(typeMap) || [];
 
-        type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : _.isElement(any) ? 'element' : 'object';
+        // type = typeMap ? typeMap[1].toLowerCase() : any.callee ? 'arguments' : _.isElement(any) ? 'element' : 'object';
 
-        return type;
+        type = typeMap[1] || 'object';
+
+        return type.toLowerCase();
         
     };
 
@@ -2307,7 +2309,8 @@
         src = args.shift();
 
         var numfomart = function(str) {
-            var reg = str.indexOf('.') > -1 ? /(\d{1,3})(?=(?:\d{3})+\.)/g : /(\d{1,3})(?=(?:\d{3})+$)/g;
+            // var reg = str.indexOf('.') > -1 ? /(\d{1,3})(?=(?:\d{3})+\.)/g : /(\d{1,3})(?=(?:\d{3})+$)/g;
+            var reg = /(\d{1,3})(?=(?:\d{3})+[.$])/g;
             return str.replace(reg, '$1,');
         };
 
