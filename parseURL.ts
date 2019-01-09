@@ -1,1 +1,1 @@
-export { parseURL, rebuildURL } from './src/parse-url';
+export { parseURL, rebuildURL } from './lib/parse-url';

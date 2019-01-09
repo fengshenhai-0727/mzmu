@@ -1,2 +1,2 @@
-import * as mzm from './src';
-export default mzm;
+import * as mujs from './lib';
+export default mujs;
