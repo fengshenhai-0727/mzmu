@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "outDir": "../dist/mzmu",
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "declaration": true,
+        "sourceMap": true,
+        "jsx": "react",
+        "listFiles": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "baseUrl": "./mzm/index.ts",
+        "types": [
+            "node"
+        ],
+        "typeRoots": [
+            "node_modules/@types",
+            "../common.ts"
+        ],
+        "paths": {
+            "react": ["node_modules/@types/react"]
+        },
+        "lib": [
+            "es2015",
+            "dom"
+        ]
+    },
+    "include": [
+        "./**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts",
+        "**/*.spec.tsx"
+    ]
+
+}

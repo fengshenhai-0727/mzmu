@@ -12,6 +12,7 @@ import { __ifnvl, __run } from './run';
 import { __isNil } from './__theory';
 import { __extend } from './object';
 import { __multiple } from './math';
+import { __each } from './iteratee';
 
 /**
  * 字符创format
@@ -264,3 +265,14 @@ export function __format(value: Value, format?: any | any[] | NumberFormatOption
             return (format || ['false', 'true'])[value ? 1 : 0];
     }
 }
+
+export function __deepDecodeURIComponent(str: string) {
+    __each(str.split('%'), () => {
+        str = decodeURIComponent(str);
+    });
+    return str;
+}
+
+export const __leftpad = (str: string, length: number, symbol: string = '0') => {
+    return _.padStart(str, length, symbol);
+};

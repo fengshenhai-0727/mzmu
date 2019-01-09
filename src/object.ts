@@ -42,3 +42,58 @@ export function __extend(...targets: any[]): any {
 
     return target;
 }
+
+/**
+ * mu.tile
+ * 将一个对象平铺展开
+ * @private
+ */
+export function __tile(obj: object) {
+    if (typeof obj !== 'object') {
+        return obj;
+    }
+
+    let isBaseType = (item) => __type(item, 'string', 'number', 'function', 'regex', 'symbol', 'null', 'undefined');
+    let path = (key, context) => {
+        if (typeof key === 'number' && __type(context, 'array')) {
+            return `[${key}]`;
+        }
+
+        return key;
+    };
+
+    let rst = {};
+
+    __each(obj, (item, key, context) => {
+        let k = path(key, context);
+        if (isBaseType(item)) {
+            rst[k] = item;
+        } else {
+            __each(__tile(item), (subItem, subKey, subContext) => {
+                let kk = path(subKey, subContext);
+                rst[`${k}.${kk}`] = subItem;
+            });
+        }
+    });
+
+    return rst;
+}
+
+/**
+ * mu.stack
+ * as mu.untile
+ * 平铺堆叠成对象
+ * @param obj
+ * @private
+ */
+export function __stack(obj: { [propName: string]: any }) {
+    let rst = {};
+
+    __each(obj, (value, key) => {
+        _.set(rst, key, value);
+    });
+
+    return rst;
+}
+
+export const __untile = __stack;

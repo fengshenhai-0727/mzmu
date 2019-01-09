@@ -1,2 +1,2 @@
 import * as _ from 'lodash';
-export const __noop: () => void = _.noop;
+export const __noop: (...args: any[]) => void = _.noop;
