@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "../dist/mzm",
+        "outDir": "../dist/mujs",
         "target": "es5",
         "module": "commonjs",
         "noImplicitAny": false,
@@ -14,7 +14,7 @@
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
-        "baseUrl": "./mzm/index.ts",
+        "baseUrl": "./mujs/index.ts",
         "types": [
             "node"
         ],

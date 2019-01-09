@@ -50,7 +50,7 @@ cd ./$_name
     fi
 
     # 旧版本号
-    _ov=`npm view mzmu version`
+    _ov=`npm view mujs version`
 
     echo "当前版本 -=>" $_ov
 

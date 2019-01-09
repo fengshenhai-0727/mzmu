@@ -791,7 +791,7 @@
     /**
      * mu.ifnvl(Any src, Any target)
      * 如果 src 为 null 或 undefined 则输出 target 否则 输出 src 或 fn 的值
-     * @param src
+     * @param lib
      * @param target
      */
 
@@ -830,7 +830,7 @@
     /**
      * mu.ifempty(Any src, Any target, Function fn)
      * if src === empty ? target : ( fn || src )
-     * @param src
+     * @param lib
      * @param target
      * @param fn
      * @returns {{any}}
