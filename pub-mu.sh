@@ -14,10 +14,20 @@ mkdir ./dist/$_name
 # 更新文件
 cd ./$_name
 
-    git checkout master
+    # 获得当前分支名
+    # 发布版本必须在Master分支下
+    # r若果当前分支不是Master, 则有可能当前功能未Merge到Master分支
 
-    if [ $? -ne 0 ]; then
-        echo '切换分支错误'
+    _branch=`git branch | grep '*' | cut -c 3-`
+
+    if [ _branch != "master" ]; then
+
+        echo '...'
+        echo "当前分支 $_branch 不是master分支"
+        echo '请验证是否将版本分支merge master'
+        echo '只有在master上才可以发布版本'
+        echo '...'
+        echo ''
         exit 0
     fi
 
@@ -32,7 +42,10 @@ cd ./$_name
     ../node_modules/.bin/tsc -p ./tsconfig.json
 
     if [ $? -ne 0 ]; then
-        echo 编译错误
+        echo '...'
+        echo '编译错误，请检查代码，修正问题'
+        echo '...'
+        echo ''
         exit 0
     fi
 
@@ -61,5 +74,26 @@ cd ./$_name
         _version=`npm version patch --no-git-tag-version`
     else
         npm version $_version --no-git-tag-version
+    fi
+
+    echo "::::: 推送到NPM $_ov -> $_version"
+
+    echo ":::::: 推送到NPM"
+        npm publish ../dist/$_name
+
+    if [ $? -eq 0 ]; then
+
+        echo ":::::::::::: Git Mark 此次修改信息"
+        git pull
+        git add .
+        git commit -am "$_ov -> $_version :: $_commit"
+        git pull
+        git push
+
+        _tag="mu_v$_version"
+
+        echo "::::::::::::::: Git Tag"
+        git tag $_tag -m "$_ov -> $_version :: $_commit"
+        git push --tags
     fi
 cd ..
