@@ -6,7 +6,7 @@
         "type": "git",
         "url": "git+https://github.com/amily4555/mzmu.git"
     },
-    "keywords": ["mizi", "mzmu", "js", "tool"],
+    "keywords": ["mizi", "mzmu_v2", "js", "tool"],
     "scripts": {
         "pub:mzmu": "bash ./pub-mu.sh"
     },
@@ -22,5 +22,5 @@
     "bugs": {
         "url": "https://github.com/amily4555/mzmu/issues"
     },
-    "homepage": "https://github.com/amily4555/mzmu#readme"
+    "homepage": "https://github.com/amily4555/mzmu/blob/master/README.md"
 }

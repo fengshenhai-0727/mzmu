@@ -1,2 +1,2 @@
-import * as mujs from './lib';
-export default mujs;
+import * as mu from './lib';
+export default mu;
