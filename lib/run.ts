@@ -90,7 +90,6 @@ export function __if(val: any, trueFunc: SoFunc, falseFunc: SoFunc = __noop) {
  * @param val
  * @param trueFunc
  * @param falseFunc
- * @param args
  * @private
  *
  * # 类似闭包的写法
@@ -109,5 +108,5 @@ export function __run(val: any, trueFunc?: SoFunc, falseFunc?: SoFunc) {
         return rst;
     }
 
-    return !__isEmpty(val) ? __sofunc(trueFunc, val) : __sofunc(falseFunc, val);
+    return __isEmpty(rst) ? __sofunc(falseFunc, rst) : __sofunc(trueFunc, rst);
 }

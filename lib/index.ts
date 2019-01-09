@@ -1,7 +1,7 @@
 export { __type as type } from './__type';
 export { __noop as noop } from './__noop';
-export { __isNil as isNil, __isEmpty as isEmpty, __isFalse as isFalse } from './__theory';
-export { __if as iif, __empty as empty, __exist as exist, __ifempty as ifempty, __ifnvl as ifnvl, __run as run } from './run';
+export { __isNil as isNil, __isEmpty as isEmpty, __isFalse as isFalse, __isExist as isExist, __isNotEmpty as isNotEmpty } from './__theory';
+export { __if as iffi, __empty as empty, __exist as exist, __ifempty as ifempty, __ifnvl as ifnvl, __run as run } from './run';
 export { __each as each, __map as map } from './iteratee';
 export { __extend as extend, __tile as tile, __stack as stack } from './object';
 export { __transpose as transpose } from './array';
@@ -21,6 +21,8 @@ export { __add as add, __subtract as subtract, __multiple as multiple, __divide 
 
 export { __storage as storage, __sessionStorage as sessionStorage } from './__storage';
 
+export { __isBaseType as isBaseType, __isWindow as isWindow } from './condition';
+
 export {
     __upArray as upArray,
     __and as and,
@@ -35,7 +37,6 @@ export {
 export {
     have,
     injector,
-    isBaseType,
     isDateLike,
     isIf,
     isNotIf,
@@ -62,7 +63,6 @@ export {
     isPlainObject,
     isFunction,
     isEmptyObject,
-    isNotEmpty,
     isNotExist,
     isArrayLike,
     randomInt,
@@ -90,6 +90,5 @@ export {
     trim,
     concat,
     now,
-    intercept,
-    isWindow
+    intercept
 } from './adjust-func';

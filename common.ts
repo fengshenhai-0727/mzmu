@@ -1,8 +1,8 @@
-// type Primitive = boolean | number | string | symbol | null | undefined;
-//
-// type NonPrimitive = object;
+type Primitive = boolean | number | string | symbol | null | undefined;
 
-type SoFunc = ((val: any) => any) | any;
+type NonPrimitive = object;
+
+type SoFunc = ((...val: any[]) => any) | any;
 
 // 对象字面量 怎么表示?
 type Obj = object;

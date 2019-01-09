@@ -8,7 +8,7 @@ function statement(name: string) {
 
 function warn(msg: string, func: any, ...args: any[]) {
     console.warn(msg, ', support use lodash(_) in mu@v2');
-    return func.call(this, args);
+    return func(...args);
 }
 
 /**
@@ -137,11 +137,6 @@ export const isEmptyObject = (value: any) => warn('建议使用_.isEmpty 替换 
 /**
  * @deprecated
  */
-export const isNotEmpty = (value: any) => warn('建议使用 !_.isEmpty 替换 mu.isNotEmpty', !_.isEmpty, value);
-
-/**
- * @deprecated
- */
 export const isNotExist = (value: any) => warn('建议使用_.isNil 替换 mu.isNotExist', _.isNil, value);
 
 /**
@@ -245,7 +240,7 @@ export const pick = (obj: object, iteratee: Iteratee<any>) => warn('建议使用
 /**
  * @deprecated
  */
-export const bind = (func: MtFunction, context: MtObject, ...args: any[]) =>
+export const bind = (func: MtFunction, context: any, ...args: any[]) =>
     warn('建议使用_.bind 替换 mu.bind', _.bind, func, context, ...args);
 
 /**
@@ -285,9 +280,3 @@ export const intercept = (str: string, max: number, adjust: number, symbol: stri
         omission: symbol
     });
 };
-
-
-
-export function isWindow(win) {
-    return !!(win && win === win.window);
-}

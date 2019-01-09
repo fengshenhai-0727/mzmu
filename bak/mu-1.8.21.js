@@ -405,6 +405,7 @@
         }
         var sval, tval;
         var key;
+
         _.each(args, function(target) {
             for(key in target) {
                 sval = src[key];

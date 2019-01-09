@@ -28,7 +28,7 @@ export function __reorigin(value: any) {
  * @param compares
  * @private
  */
-export function __or(src, ...compares: []) {
+export function __or(src, ...compares: any[]) {
     let rst: boolean = false;
 
     __each(compares, (item) => {
