@@ -20,8 +20,8 @@ import { __each } from './iteratee';
  * @param format
  * @private
  *
- * mzm.format('江山如此多娇, {0}', ['引无数英雄竞折腰'])
- * mzm.format('江山如此多娇, {content}', {content: '引无数英雄竞折腰'})
+ * mujs.format('江山如此多娇, {0}', ['引无数英雄竞折腰'])
+ * mujs.format('江山如此多娇, {content}', {content: '引无数英雄竞折腰'})
  * // => "江山如此多娇, 引无数英雄竞折腰"
  */
 export function __stringFormat(str: string, format: any) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-_name=mzm
+_name=mujs
 
 # 删除相关文件
 
