@@ -10,3 +10,4 @@ design/
 test/bower_components
 coverage/
 karma.conf.js
+./dist
