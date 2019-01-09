@@ -1,5 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mzmu = require("./lib");
-exports.default = mzmu;
+var mu = require("./lib");
+exports.default = mu;
 //# sourceMappingURL=index.js.map

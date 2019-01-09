@@ -1,14 +1,20 @@
 {
     "name": "mzmu",
-    "version": "2.0.0-beta.1",
+    "version": "2.0.0-beta.2",
     "description": "mzmu 是对lodash的一个补充",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/amily4555/mzmu.git"
     },
-    "keywords": ["mizi", "mzmu_v2", "js", "tool"],
+    "keywords": [
+        "mizi",
+        "mzmu",
+        "js",
+        "tool"
+    ],
     "scripts": {
-        "pub:mzmu": "bash ./pub-mu.sh"
+        "pub:mzmu": "bash ./pub-mu.sh",
+        "pub:mu": "bash ./pub-mu.sh"
     },
     "main": "./index.ts",
     "devDependencies": {
@@ -22,5 +28,5 @@
     "bugs": {
         "url": "https://github.com/amily4555/mzmu/issues"
     },
-    "homepage": "https://github.com/amily4555/mzmu/blob/master/README.md"
+    "homepage": "https://github.com/amily4555/mzmu#readme"
 }

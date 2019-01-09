@@ -1,2 +1,2 @@
-import * as mzmu from './lib';
-export default mzmu;
+import * as mu from './lib';
+export default mu;
