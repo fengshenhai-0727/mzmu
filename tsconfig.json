@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "../dist/mzmu",
+        "outDir": "../dist/mzm",
         "target": "es5",
         "module": "commonjs",
         "noImplicitAny": false,
