@@ -3,12 +3,7 @@
 _name=mzmu
 
 # 删除相关文件
-
 rm -rf ./dist/$_name
-
-# 新建文件夹
-
-mkdir ./dist/$_name
 
 # 获得当前分支名
 # 发布版本必须在Master分支下
