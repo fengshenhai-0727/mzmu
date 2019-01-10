@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
 const __type_1 = require("./__type");
 const run_1 = require("./run");
-const __theory_1 = require("./__theory");
 const mu_const_1 = require("../mu-const");
 function __each(collection, iteratee) {
     if (_.isString(collection)) {
@@ -21,12 +20,9 @@ function __each(collection, iteratee) {
     return _.each(collection, iteratee);
 }
 exports.__each = __each;
-function __map(collection, iteratee, target = []) {
-    let type = __type_1.__type(target);
-    if (!__theory_1.__isEmpty(target)) {
-        console.warn('target must be empty object or array');
-        target = type === 'array' ? [] : {};
-    }
+function __map(collection, iteratee, target) {
+    let type = __type_1.__type(target || collection);
+    target = type === 'object' ? {} : [];
     collection = _.cloneDeep(collection);
     __each(collection, (value, key, context) => {
         let rst = iteratee(value, key, context);

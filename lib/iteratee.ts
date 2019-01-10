@@ -84,17 +84,10 @@ export function __each(collection: Collection | string | number, iteratee: Itera
  *
  */
 
-export function __map(
-    collection: Collection | string | number,
-    iteratee: Iteratee<Many<any | '__remove_map__'>>,
-    target: [] | {} = []
-): any {
-    let type = __type(target);
+export function __map(collection: Collection | string | number, iteratee: Iteratee<Many<any | '__remove_map__'>>, target?: [] | {}): any {
 
-    if (!__isEmpty(target)) {
-        console.warn('target must be empty object or array');
-        target = type === 'array' ? [] : {};
-    }
+    let type = __type(target || collection);
+    target = type === 'object' ? {} : [];
 
     collection = _.cloneDeep(collection);
     __each(collection, (value, key, context) => {
