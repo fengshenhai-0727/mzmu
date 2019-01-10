@@ -1,37 +1,38 @@
-type Primitive = boolean | number | string | symbol | null | undefined;
+declare type Primitive = boolean | number | string | symbol | null | undefined;
 
-type NonPrimitive = object;
+declare type NonPrimitive = object;
 
-type SoFunc = ((...val: any[]) => any) | any;
+declare type SoFunc = ((val: any) => any) | any;
 
 // 对象字面量 怎么表示?
-type Obj = object;
+declare type Obj = object;
 
-type Value = string | number | symbol | any[] | any;
+declare type Value = string | number | symbol | any[] | any;
 
-type KeyInx = string | number;
+declare type KeyInx = string | number;
 
-type Collection = any[] | object;
+declare type Collection = any[] | object;
 
-type Iteratee<T> = (value: any, key: KeyInx, collection?: any) => T;
+declare type Iteratee<T> = (value: any, key: KeyInx, collection?: any) => T;
 
-type Many<T> = T | ReadonlyArray<T>;
+declare type Many<T> = T | ReadonlyArray<T>;
 
-type AtLeast<T> = T | Array<T>;
+declare type AtLeast<T> = T | Array<T>;
 
-type PropertyName = string | number | symbol;
+declare type PropertyName = string | number | symbol;
 
-type NotVoid = {} | null | undefined;
+declare type NotVoid = {} | null | undefined;
 
-type AtLeastPropertyName = PropertyName | PropertyName[];
+declare type AtLeastPropertyName = PropertyName | PropertyName[];
 
-type IterateeProperty<T> = Iteratee<T> | PropertyName;
+declare type IterateeProperty<T> = Iteratee<T> | PropertyName;
 
-type IterateeAtLeastProperty<T> = Iteratee<T> | AtLeastPropertyName;
+declare type IterateeAtLeastProperty<T> = Iteratee<T> | AtLeastPropertyName;
 
-type DataRow = Obj;
+declare type DataRow = Obj;
 
-type DataTable = Obj[];
+declare type DataTable = Obj[];
 
-type MtFunction = (...args: any[]) => any;
-type MtObject = { [propName: string]: any };
+declare type MtFunction = (...args: any[]) => any;
+
+declare type MtObject = { [propName: string]: any };

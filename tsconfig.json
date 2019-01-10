@@ -20,7 +20,7 @@
         ],
         "typeRoots": [
             "node_modules/@types",
-            "../common.ts"
+            "../common.d.ts"
         ],
         "paths": {
             "react": ["node_modules/@types/react"]

@@ -34,6 +34,9 @@ if [ $? -ne 0 ]; then
     exit 0
 fi
 
+# 拷贝类型定义文件
+cp ././common.d.ts ./common.d.ts
+
 # 编译文件
 ../node_modules/.bin/tsc -p ./tsconfig.json
 
@@ -76,6 +79,7 @@ echo "::::: 推送到NPM $_ov -> $_version"
 
 ## 拷贝文件
 cp ./package.json ./dist/$_name/package.json
+cp ././common.d.ts ./dist/$_name/common.d.ts
 
 
 echo ":::::: 推送到NPM"
