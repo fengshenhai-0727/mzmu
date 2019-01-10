@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "./dist/mzmu",
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "noImplicitAny": false,
         "removeComments": true,
@@ -22,12 +22,9 @@
             "node_modules/@types",
             "../common.d.ts"
         ],
-        "paths": {
-            "react": ["node_modules/@types/react"]
-        },
         "lib": [
-            "es2015",
-            "dom"
+            "dom",
+            "es7"
         ]
     },
     "include": [
