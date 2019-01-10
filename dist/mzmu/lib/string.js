@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
-const moment_1 = require("moment");
 const __type_1 = require("./__type");
 const run_1 = require("./run");
 const __theory_1 = require("./__theory");
 const object_1 = require("./object");
 const math_1 = require("./math");
 const iteratee_1 = require("./iteratee");
+const moment = require('moment');
 function __stringFormat(str, format) {
     let type = __type_1.__type(format);
     if (type === 'array') {
@@ -81,7 +81,7 @@ function __numberFormat(num, options) {
 }
 exports.__numberFormat = __numberFormat;
 function __dateFormat(date, format) {
-    let mt = moment_1.default(date);
+    let mt = moment(date);
     return mt.format(format);
 }
 exports.__dateFormat = __dateFormat;
@@ -92,7 +92,7 @@ function __format(value, format, dateLike = false) {
         format = 'YYYY-MM-DD';
     }
     if (dateLike) {
-        if (moment_1.default.isMoment(value) || new Date(value).toString() !== 'Invalid Date') {
+        if (moment.isMoment(value) || new Date(value).toString() !== 'Invalid Date') {
             type = 'date';
         }
     }

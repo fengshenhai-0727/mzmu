@@ -6,13 +6,14 @@
  * @private
  */
 import * as _ from 'lodash';
-import moment from 'moment';
 import { __type } from './__type';
 import { __ifnvl, __run } from './run';
 import { __isNil } from './__theory';
 import { __extend } from './object';
 import { __multiple } from './math';
 import { __each } from './iteratee';
+
+const moment = require('moment');
 
 /**
  * 字符创format
