@@ -28,7 +28,9 @@ export function __extend(...args: any[]): any {
         __each(item, (value, key) => {
             let srcValue = src[key];
             if (value === srcValue) {
-                return false;
+                // return false 直接跳出遍历
+                // return true 只是跳过当前
+                return true;
             }
             if(deep && __isExist(srcValue) && (_.isPlainObject(value) || _.isArray(value) )) {
                 src[key] = __extend(true, srcValue, value);

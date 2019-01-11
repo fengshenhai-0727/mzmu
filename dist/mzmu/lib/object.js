@@ -16,7 +16,7 @@ function __extend(...args) {
         iteratee_1.__each(item, (value, key) => {
             let srcValue = src[key];
             if (value === srcValue) {
-                return false;
+                return true;
             }
             if (deep && __theory_1.__isExist(srcValue) && (_.isPlainObject(value) || _.isArray(value))) {
                 src[key] = __extend(true, srcValue, value);
