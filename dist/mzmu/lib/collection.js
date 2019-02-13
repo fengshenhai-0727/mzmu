@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
+var _ = require("lodash");
 exports.__copy = _.clone;
 exports.__clone = _.cloneDeep;
 function __deleted(collection, keyInx) {

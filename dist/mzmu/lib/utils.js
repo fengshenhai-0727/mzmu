@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
-const __type_1 = require("./__type");
-const iteratee_1 = require("./iteratee");
-const object_1 = require("./object");
-const string_1 = require("./string");
+var _ = require("lodash");
+var __type_1 = require("./__type");
+var iteratee_1 = require("./iteratee");
+var object_1 = require("./object");
+var string_1 = require("./string");
 function __reorigin(value) {
     return {
         string: '',
@@ -17,9 +17,13 @@ function __reorigin(value) {
     }[__type_1.__type(value)];
 }
 exports.__reorigin = __reorigin;
-function __or(src, ...compares) {
-    let rst = false;
-    iteratee_1.__each(compares, (item) => {
+function __or(src) {
+    var compares = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        compares[_i - 1] = arguments[_i];
+    }
+    var rst = false;
+    iteratee_1.__each(compares, function (item) {
         if (item === src) {
             rst = true;
             return false;
@@ -28,9 +32,13 @@ function __or(src, ...compares) {
     return rst;
 }
 exports.__or = __or;
-function __and(src, ...compares) {
-    let rst = true;
-    iteratee_1.__each(compares, (item) => {
+function __and(src) {
+    var compares = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        compares[_i - 1] = arguments[_i];
+    }
+    var rst = true;
+    iteratee_1.__each(compares, function (item) {
         if (item !== src) {
             rst = false;
             return false;
@@ -44,15 +52,15 @@ function __upArray(one) {
 }
 exports.__upArray = __upArray;
 function __param(obj, url) {
-    let items = iteratee_1.__map(object_1.__tile(obj), (value, key) => {
+    var items = iteratee_1.__map(object_1.__tile(obj), function (value, key) {
         if (typeof value === 'string') {
             value = encodeURIComponent(string_1.__deepDecodeURIComponent(value));
         }
-        return `${key}=${value}`;
+        return key + "=" + value;
     }, []);
-    let search = items.join('&');
+    var search = items.join('&');
     if (url) {
-        let a = document.createElement('a');
+        var a = document.createElement('a');
         a.href = url;
         if (a.search.indexOf('?') === 0) {
             a.search = a.search + '&' + search;
@@ -67,12 +75,12 @@ function __param(obj, url) {
 exports.__param = __param;
 exports.__serialize = __param;
 function __param2Obj(serialize) {
-    let tile = iteratee_1.__map(serialize.split('&'), (name) => {
-        let [__key__, __value__] = name.split('=');
+    var tile = iteratee_1.__map(serialize.split('&'), function (name) {
+        var _a = name.split('='), __key__ = _a[0], __value__ = _a[1];
         __value__ = string_1.__deepDecodeURIComponent(__value__);
         return {
-            __key__,
-            __value__
+            __key__: __key__,
+            __value__: __value__
         };
     }, {});
     return object_1.__stack(tile);

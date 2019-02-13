@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
-const __type_1 = require("./__type");
-const run_1 = require("./run");
-const __theory_1 = require("./__theory");
-const object_1 = require("./object");
-const math_1 = require("./math");
-const iteratee_1 = require("./iteratee");
-const moment = require('moment');
+var _ = require("lodash");
+var __type_1 = require("./__type");
+var run_1 = require("./run");
+var __theory_1 = require("./__theory");
+var object_1 = require("./object");
+var math_1 = require("./math");
+var iteratee_1 = require("./iteratee");
+var moment = require('moment');
 function __stringFormat(str, format) {
-    let type = __type_1.__type(format);
+    var type = __type_1.__type(format);
     if (type === 'array') {
         return str.replace(/\{(\d+)\}/g, function (m, i) {
             return run_1.__ifnvl(format[i], m);
@@ -22,17 +22,20 @@ function __stringFormat(str, format) {
     }
 }
 exports.__stringFormat = __stringFormat;
-function __thousands(num, count = 3, delimiter = ',') {
-    let reg = new RegExp(`(\\d{1,${count}})(?=(?:\\d{${count}})+$)`, 'g');
-    let str = num + '';
-    let [nums] = str.split(/[%kw千万]/);
-    let [pInt, pDecimal] = nums.split('.');
-    return str.replace(pInt, pInt.replace(reg, `$1${delimiter}`));
+function __thousands(num, count, delimiter) {
+    if (count === void 0) { count = 3; }
+    if (delimiter === void 0) { delimiter = ','; }
+    var reg = new RegExp("(\\d{1," + count + "})(?=(?:\\d{" + count + "})+$)", 'g');
+    var str = num + '';
+    var nums = str.split(/[%kw千万]/)[0];
+    var _a = nums.split('.'), pInt = _a[0], pDecimal = _a[1];
+    return str.replace(pInt, pInt.replace(reg, "$1" + delimiter));
 }
 function __numberFormat(num, options) {
-    let { thousands = 3, unit, scaler, math, count, delimiter, len } = options;
-    let rst = num;
-    let unitMap = {
+    var _a;
+    var _b = options.thousands, thousands = _b === void 0 ? 3 : _b, unit = options.unit, scaler = options.scaler, math = options.math, count = options.count, delimiter = options.delimiter, len = options.len;
+    var rst = num;
+    var unitMap = {
         percent: [100, '%'],
         '%': [100, '%'],
         permile: [1000, '‰'],
@@ -43,7 +46,7 @@ function __numberFormat(num, options) {
     };
     if (unit) {
         if (__theory_1.__isNil(scaler)) {
-            [scaler, unit] = unitMap[unit] || [undefined, undefined];
+            _a = unitMap[unit] || [undefined, undefined], scaler = _a[0], unit = _a[1];
         }
         if (!__theory_1.__isNil(scaler)) {
             rst = math_1.__multiple(rst, scaler);
@@ -54,18 +57,18 @@ function __numberFormat(num, options) {
             math = 'round';
         }
     }
-    run_1.__run(math, () => {
+    run_1.__run(math, function () {
         count = count || 0;
-        let size = Math.abs(count);
-        let pow = Math.pow(10, size);
+        var size = Math.abs(count);
+        var pow = Math.pow(10, size);
         rst = +rst * pow;
         rst = Math[math](rst);
         rst = (rst + '').split('.')[0];
         rst = +rst / pow;
         if (count < 0) {
-            let [pInt, pDecimal] = (rst + '').split('.');
+            var _a = (rst + '').split('.'), pInt = _a[0], pDecimal = _a[1];
             pDecimal = _.padEnd(pDecimal, size, '0');
-            rst = `${pInt}.${pDecimal}`;
+            rst = pInt + "." + pDecimal;
         }
     });
     if (len) {
@@ -81,12 +84,13 @@ function __numberFormat(num, options) {
 }
 exports.__numberFormat = __numberFormat;
 function __dateFormat(date, format) {
-    let mt = moment(date);
+    var mt = moment(date);
     return mt.format(format);
 }
 exports.__dateFormat = __dateFormat;
-function __format(value, format, dateLike = false) {
-    let type = __type_1.__type(value);
+function __format(value, format, dateLike) {
+    if (dateLike === void 0) { dateLike = false; }
+    var type = __type_1.__type(value);
     if (_.isBoolean(format) && format) {
         dateLike = true;
         format = 'YYYY-MM-DD';
@@ -100,7 +104,7 @@ function __format(value, format, dateLike = false) {
         case 'string':
             return __stringFormat(value, format);
         case 'number':
-            let options = {
+            var options = {
                 thousands: 3
             };
             if (__type_1.__type(format, 'object')) {
@@ -109,22 +113,22 @@ function __format(value, format, dateLike = false) {
             else {
                 format = format || '';
                 format = format.split(':');
-                let math, count, unit;
+                var math = void 0, count = void 0, unit = void 0;
                 switch (format.length) {
                     case 1:
-                        [math] = format;
+                        math = format[0];
                         break;
                     case 2:
-                        [math, count] = format;
+                        math = format[0], count = format[1];
                         math = math || 'round';
                         break;
                     case 3:
-                        [math, unit, count] = format;
+                        math = format[0], unit = format[1], count = format[2];
                         unit = unit || 'percent';
                         math = math || 'round';
                         break;
                 }
-                options = object_1.__extend(options, { math, unit, count });
+                options = object_1.__extend(options, { math: math, unit: unit, count: count });
             }
             return __numberFormat(value, options);
         case 'date':
@@ -137,13 +141,14 @@ function __format(value, format, dateLike = false) {
 }
 exports.__format = __format;
 function __deepDecodeURIComponent(str) {
-    iteratee_1.__each(str.split('%'), () => {
+    iteratee_1.__each(str.split('%'), function () {
         str = decodeURIComponent(str);
     });
     return str;
 }
 exports.__deepDecodeURIComponent = __deepDecodeURIComponent;
-exports.__leftpad = (str, length, symbol = '0') => {
+exports.__leftpad = function (str, length, symbol) {
+    if (symbol === void 0) { symbol = '0'; }
     return _.padStart(str, length, symbol);
 };
 //# sourceMappingURL=string.js.map

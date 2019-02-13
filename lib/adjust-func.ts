@@ -167,12 +167,12 @@ export const unique = (value: any[]) => warn('建议使用_.uniq 替换 mu.uniqu
 /**
  * @deprecated
  */
-export const intersect = (...values: any[]) => warn('建议使用_.intersection 替换 mu.intersect', _.uniq, ...values);
+export const intersect = (...values: any[]) => warn('建议使用_.intersection 替换 mu.intersect', _.intersection, ...values);
 
 /**
  * @deprecated
  */
-export const union = (...values: any[]) => warn('建议使用_.union 替换 mu.union', _.uniq, ...values);
+export const union = (...values: any[]) => warn('建议使用_.union 替换 mu.union', _.union, ...values);
 
 /**
  * @deprecated

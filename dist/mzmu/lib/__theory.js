@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
-const __type_1 = require("./__type");
+var _ = require("lodash");
+var __type_1 = require("./__type");
 function __isNil(val) {
     return val == null;
 }

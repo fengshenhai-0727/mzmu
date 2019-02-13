@@ -12,7 +12,7 @@ function baseStorage(storage, key, value) {
         };
     }
     if (value == null) {
-        let rst = storage.getItem(key);
+        var rst = storage.getItem(key);
         try {
             return JSON.parse(rst);
         }

@@ -1,20 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
-const __theory_1 = require("./__theory");
-const run_1 = require("./run");
-const iteratee_1 = require("./iteratee");
-const __type_1 = require("./__type");
-function __extend(...args) {
+var _ = require("lodash");
+var __theory_1 = require("./__theory");
+var run_1 = require("./run");
+var iteratee_1 = require("./iteratee");
+var __type_1 = require("./__type");
+function __extend() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
     if (__theory_1.__isEmpty(args)) {
         return void 0;
     }
-    let [deep, src, targets] = run_1.__exist(args.shift(), (value) => {
+    var _a = run_1.__exist(args.shift(), function (value) {
         return __type_1.__type(value, 'boolean') ? [value, args.shift(), args] : [false, value, args];
-    });
-    iteratee_1.__each(targets, (item) => {
-        iteratee_1.__each(item, (value, key) => {
-            let srcValue = src[key];
+    }), deep = _a[0], src = _a[1], targets = _a[2];
+    iteratee_1.__each(targets, function (item) {
+        iteratee_1.__each(item, function (value, key) {
+            var srcValue = src[key];
             if (value === srcValue) {
                 return true;
             }
@@ -33,23 +37,23 @@ function __tile(obj) {
     if (typeof obj !== 'object') {
         return obj;
     }
-    let isBaseType = (item) => __type_1.__type(item, 'string', 'number', 'function', 'regex', 'symbol', 'null', 'undefined');
-    let path = (key, context) => {
+    var isBaseType = function (item) { return __type_1.__type(item, 'string', 'number', 'function', 'regex', 'symbol', 'null', 'undefined'); };
+    var path = function (key, context) {
         if (typeof key === 'number' && __type_1.__type(context, 'array')) {
-            return `[${key}]`;
+            return "[" + key + "]";
         }
         return key;
     };
-    let rst = {};
-    iteratee_1.__each(obj, (item, key, context) => {
-        let k = path(key, context);
+    var rst = {};
+    iteratee_1.__each(obj, function (item, key, context) {
+        var k = path(key, context);
         if (isBaseType(item)) {
             rst[k] = item;
         }
         else {
-            iteratee_1.__each(__tile(item), (subItem, subKey, subContext) => {
-                let kk = path(subKey, subContext);
-                rst[`${k}.${kk}`] = subItem;
+            iteratee_1.__each(__tile(item), function (subItem, subKey, subContext) {
+                var kk = path(subKey, subContext);
+                rst[k + "." + kk] = subItem;
             });
         }
     });
@@ -57,8 +61,8 @@ function __tile(obj) {
 }
 exports.__tile = __tile;
 function __stack(obj) {
-    let rst = {};
-    iteratee_1.__each(obj, (value, key) => {
+    var rst = {};
+    iteratee_1.__each(obj, function (value, key) {
         _.set(rst, key, value);
     });
     return rst;

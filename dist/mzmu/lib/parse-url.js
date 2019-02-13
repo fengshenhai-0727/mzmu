@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
-const utils_1 = require("./utils");
-const run_1 = require("./run");
-const __theory_1 = require("./__theory");
-const object_1 = require("./object");
+var _ = require("lodash");
+var utils_1 = require("./utils");
+var run_1 = require("./run");
+var __theory_1 = require("./__theory");
+var object_1 = require("./object");
 function parseURL(url) {
-    let l = window.location;
+    var l = window.location;
     url = url || l.href;
-    let parser = document.createElement('a');
+    var parser = document.createElement('a');
     parser.href = url;
-    let URI = {
+    var URI = {
         source: parser.href,
         protocol: parser.protocol || l.protocol,
         host: parser.host,
@@ -30,7 +30,7 @@ function parseURL(url) {
         reform: void 0
     };
     URI.query = utils_1.__param2Obj(URI.search);
-    URI.ext = run_1.__run(_.last(URI.pathname.split('/')), (item) => {
+    URI.ext = run_1.__run(_.last(URI.pathname.split('/')), function (item) {
         var arr = item.split('.');
         if (arr.length > 1) {
             return _.last(arr);
@@ -40,12 +40,12 @@ function parseURL(url) {
         }
     });
     URI.protocolname = URI.protocol.replace(/\:$/, '');
-    let router = {
+    var router = {
         router: URI.hash.split('?')[0],
         routerSearch: URI.hash.split('?')[1],
         routerQuery: {}
     };
-    run_1.__run(router.routerSearch, (routerSearch) => {
+    run_1.__run(router.routerSearch, function (routerSearch) {
         router.routerQuery = utils_1.__param2Obj(routerSearch);
     });
     URI = _.extend(URI, router);
@@ -54,7 +54,7 @@ function parseURL(url) {
         run_1.__run(opts.query, function (query) {
             opts.search = utils_1.__param(query);
         });
-        let routerSearch = run_1.__run(opts.routerQuery, function (query) {
+        var routerSearch = run_1.__run(opts.routerQuery, function (query) {
             return utils_1.__param(query);
         });
         routerSearch = routerSearch ? '?' + routerSearch : '';
@@ -62,8 +62,8 @@ function parseURL(url) {
         parser = _.extend(parser, opts);
         return parser.href;
     };
-    URI.reform = (fn) => {
-        let opts = fn.call(null, URI);
+    URI.reform = function (fn) {
+        var opts = fn.call(null, URI);
         if (__theory_1.__isEmpty(opts)) {
             return console.error('回调函数必须返回对象');
         }
