@@ -19,7 +19,7 @@ declare type Many<T> = T | ReadonlyArray<T>;
 
 declare type AtLeast<T> = T | Array<T>;
 
-declare type PropertyName = string | number | symbol;
+declare type PropertyName = string | number;
 
 declare type NotVoid = {} | null | undefined;
 
