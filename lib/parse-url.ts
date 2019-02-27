@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { __param2Obj, __param } from './utils';
 import { __run, __ifnvl } from './run';
 import { __noop } from './__noop';
-import { ifnvl } from './index';
+import { ifnvl } from '.';
 import { __isEmpty } from './__theory';
 import { __extend } from './object';
 

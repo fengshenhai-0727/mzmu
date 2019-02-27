@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./dist/mzmu",
+        "outDir": "./dist",
         "target": "es5",
         "module": "commonjs",
         "noImplicitAny": false,
@@ -14,13 +14,13 @@
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
-        "baseUrl": "./mzmu/index.ts",
+        "baseUrl": "./index.ts",
         "types": [
             "node"
         ],
         "typeRoots": [
             "node_modules/@types",
-            "../common.d.ts"
+            "./common.d.ts"
         ],
         "lib": [
             "dom",

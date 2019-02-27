@@ -3,6 +3,7 @@ import { __type } from './__type';
 import { __ifnvl } from './run';
 import { __isEmpty } from './__theory';
 import { MU } from '../mu-const';
+import { __or } from './utils';
 
 // 迭代器
 
@@ -18,7 +19,7 @@ import { MU } from '../mu-const';
  */
 export function __each(collection: Collection | string | number, iteratee: Iteratee<void | boolean>): void {
     if (_.isString(collection)) {
-        collection = collection.split('');
+        collection = (collection as string).split('');
         return __each(collection, iteratee);
     }
 
@@ -85,14 +86,18 @@ export function __each(collection: Collection | string | number, iteratee: Itera
  */
 
 export function __map(collection: Collection | string | number, iteratee: Iteratee<Many<any | '__remove_map__'>>, target?: [] | {}): any {
-
     let type = __type(target || collection);
     target = type === 'object' ? {} : [];
 
     collection = _.cloneDeep(collection);
     __each(collection, (value, key, context) => {
         let rst = iteratee(value, key, context);
-        if (rst !== MU.MAP_SKIP) {
+
+        if (rst === MU.MAP_BREAK) {
+            return false;
+        }
+
+        if (!__or(rst, MU.MAP_SKIP, MU.MAP_REMOVE)) {
             if (type === 'object') {
                 if (_.has(rst, '__key__')) {
                     target[rst.__key__] = __ifnvl(rst.__value__, rst.__val__);

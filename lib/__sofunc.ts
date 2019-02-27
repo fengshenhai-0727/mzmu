@@ -6,7 +6,7 @@
  * @private
  */
 
-export function __sofunc(val: any, ...params: any[]) {
+export function __sofunc(val: any, ...params: any[]): any {
     if (typeof val === 'function') {
         return val.apply(this, params);
     }

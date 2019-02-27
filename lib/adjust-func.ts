@@ -214,11 +214,6 @@ export const vals = (obj: any) => warn('建议使用_.values 替换 mu.vals', _.
 /**
  * @deprecated
  */
-export const remove = (value: any[], predicate: any) => warn('建议使用_.remove 替换 mu.remove', _.values, value, predicate);
-
-/**
- * @deprecated
- */
 export const find = (collection: Collection, predicate: any) => warn('建议使用_.find 替换 mu.find', _.find, collection, predicate);
 
 /**

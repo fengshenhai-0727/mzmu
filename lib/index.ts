@@ -15,7 +15,7 @@ export {
     __deepDecodeURIComponent as deepDecodeURIComponent
 } from './string';
 
-export { __clone as clone, __copy as copy, __deleted as deleted, __length as length } from './collection';
+export { __clone as clone, __copy as copy, __remove as remove, __length as length } from './collection';
 
 export { __add as add, __subtract as subtract, __multiple as multiple, __divide as divide } from './math';
 
@@ -78,7 +78,6 @@ export {
     groupArray,
     keys,
     vals,
-    remove,
     find,
     findIndex,
     prop,

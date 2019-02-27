@@ -12,7 +12,6 @@ import { __isNil } from './__theory';
 import { __extend } from './object';
 import { __multiple } from './math';
 import { __each } from './iteratee';
-
 const moment = require('moment');
 
 /**

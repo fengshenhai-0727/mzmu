@@ -3,7 +3,7 @@
 _name=mzmu
 
 # 删除相关文件
-rm -rf ./dist/$_name
+rm -rf ./dist
 
 # 获得当前分支名
 # 发布版本必须在Master分支下
@@ -29,17 +29,17 @@ if [ $? -ne 0 ]; then
     exit 0
 fi
 
-# 拷贝类型定义文件
-cp ../common.d.ts ./common.d.ts
-
 # 编译文件
-../node_modules/.bin/tsc -p ./tsconfig.json
+./node_modules/.bin/tsc -p ./tsconfig.json
 
 if [ $? -ne 0 ]; then
     echo '...'
     echo '编译错误，请检查代码，修正问题'
     echo '...'
     echo ''
+
+    $1
+
     exit 0
 fi
 
@@ -73,13 +73,13 @@ fi
 echo "::::: 推送到NPM $_ov -> $_version"
 
 ## 拷贝文件
-cp ./package.json ./dist/$_name/package.json
-cp ./README.md ./dist/$_name/README.md
-cp ././common.d.ts ./dist/$_name/common.d.ts
+cp ./package.json ./dist/package.json
+cp ./README.md ./dist/README.md
+cp ./common.d.ts ./dist/common.d.ts
 
 
 echo ":::::: 推送到NPM"
-    npm publish ./dist/$_name
+    npm publish ./dist
 
 if [ $? -eq 0 ]; then
 

@@ -1,6 +1,6 @@
 import { __sofunc } from './__sofunc';
 import { __noop } from './__noop';
-import { __isEmpty, __isNil } from './__theory';
+import { __isEmpty, __isNil, __isExist } from './__theory';
 
 /**
  * mu.empty(val: any, trueFunc: SoFunc, falseFunc: SoFunc = __noop)
@@ -69,7 +69,7 @@ export function __ifnvl(val: any, trueValue: Value, falseValue?: Value): any {
  * @private
  */
 export function __exist(val: any, trueFunc: SoFunc, falseFunc: SoFunc = __noop) {
-    return !__isNil(val) ? __sofunc(trueFunc, val) : __sofunc(falseFunc, val);
+    return __isExist(val) ? __sofunc(trueFunc, val) : __sofunc(falseFunc, val);
 }
 
 /**
