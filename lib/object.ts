@@ -53,7 +53,7 @@ export function __tile(obj: object) {
         return obj;
     }
 
-    let isBaseType = (item) => __type(item, 'string', 'number', 'function', 'regex', 'symbol', 'null', 'undefined');
+    let isBaseType = (item) => __type(item, 'string', 'number', 'boolean', 'function', 'regex', 'symbol', 'null', 'undefined');
     let path = (key, context) => {
         if (typeof key === 'number' && __type(context, 'array')) {
             return `[${key}]`;

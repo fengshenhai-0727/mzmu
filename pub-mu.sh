@@ -37,9 +37,6 @@ if [ $? -ne 0 ]; then
     echo '编译错误，请检查代码，修正问题'
     echo '...'
     echo ''
-
-    $1
-
     exit 0
 fi
 

@@ -37,7 +37,7 @@ function __tile(obj) {
     if (typeof obj !== 'object') {
         return obj;
     }
-    var isBaseType = function (item) { return __type_1.__type(item, 'string', 'number', 'function', 'regex', 'symbol', 'null', 'undefined'); };
+    var isBaseType = function (item) { return __type_1.__type(item, 'string', 'number', 'boolean', 'function', 'regex', 'symbol', 'null', 'undefined'); };
     var path = function (key, context) {
         if (typeof key === 'number' && __type_1.__type(context, 'array')) {
             return "[" + key + "]";

@@ -1,6 +1,6 @@
 {
     "name": "mzmu",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "mzmu 是对lodash的一个补充",
     "repository": {
         "type": "git",
