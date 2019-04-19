@@ -70,6 +70,10 @@ export function __upArray(one: any) {
     return _.isArray(one) ? one : [one];
 }
 
+export function __downOne(arr: any[]): any {
+    return arr.length === 1 ? arr[0] : arr;
+}
+
 /**
  * mu.param
  * as mu.serialize

@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 import { __isNil, __isEmpty, __isExist } from './__theory';
 import { __ifnvl, __run, __exist } from './run';
-import { __each } from './iteratee';
+import { __each, __map } from './iteratee';
 import { __type } from './__type';
+import { __downOne } from './utils';
 
 /**
  * mu.extend(isDeep: boolean, ...targets: any[])
@@ -22,9 +23,7 @@ export function __extend(...args: any[]): any {
         return __type(value, 'boolean') ? [value, args.shift(), args] : [false, value, args];
     });
 
-
     __each(targets, (item) => {
-
         __each(item, (value, key) => {
             let srcValue = src[key];
             if (value === srcValue) {
@@ -32,10 +31,10 @@ export function __extend(...args: any[]): any {
                 // return true 只是跳过当前
                 return true;
             }
-            if(deep && __isExist(srcValue) && (_.isPlainObject(value) || _.isArray(value) )) {
+            if (deep && __isExist(srcValue) && (_.isPlainObject(value) || _.isArray(value))) {
                 src[key] = __extend(true, srcValue, value);
             } else {
-                src[key] = value
+                src[key] = value;
             }
         });
     });
@@ -97,3 +96,44 @@ export function __stack(obj: { [propName: string]: any }) {
 }
 
 export const __untile = __stack;
+
+let analysisPath = function(obj, path) {
+    let reg = /\[\s*\*\s*]/;
+
+    let paths = [];
+
+    let getPaths = function(paths, obj, path): string[] {
+        if (!reg.test(path)) {
+            paths.push(path);
+        } else {
+            let _path = path.replace(reg, '|||');
+            let [first, suffix] = _path.split('|||');
+
+            let data = _.get(obj, first);
+
+            if (_.isObject(data) || _.isArray(data)) {
+                __each(data, (v, key) => {
+                    let __path = `${first}[${key}]${suffix}`;
+                    getPaths(paths, obj, __path);
+                });
+            } else {
+                throw new TypeError(`path -> ${path} error`);
+            }
+        }
+
+        return paths;
+    };
+
+    return getPaths(paths, obj, path);
+};
+
+export function __get(obj: MtObject, path: string) {
+    let rst = __map(analysisPath(obj, path), (path) => _.get(obj, path));
+    return __downOne(rst);
+}
+
+export function __set(obj: MtObject, path: string, value: any) {
+    __each(analysisPath(obj, path), (path) => {
+        _.set(obj, path, value);
+    });
+}
