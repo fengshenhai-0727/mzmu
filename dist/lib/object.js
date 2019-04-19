@@ -5,6 +5,7 @@ var __theory_1 = require("./__theory");
 var run_1 = require("./run");
 var iteratee_1 = require("./iteratee");
 var __type_1 = require("./__type");
+var utils_1 = require("./utils");
 function __extend() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -69,4 +70,40 @@ function __stack(obj) {
 }
 exports.__stack = __stack;
 exports.__untile = __stack;
+var analysisPath = function (obj, path) {
+    var reg = /\[\s*\*\s*]/;
+    var paths = [];
+    var getPaths = function (paths, obj, path) {
+        if (!reg.test(path)) {
+            paths.push(path);
+        }
+        else {
+            var _path = path.replace(reg, '|||');
+            var _a = _path.split('|||'), first_1 = _a[0], suffix_1 = _a[1];
+            var data = _.get(obj, first_1);
+            if (_.isObject(data) || _.isArray(data)) {
+                iteratee_1.__each(data, function (v, key) {
+                    var __path = first_1 + "[" + key + "]" + suffix_1;
+                    getPaths(paths, obj, __path);
+                });
+            }
+            else {
+                throw new TypeError("path -> " + path + " error");
+            }
+        }
+        return paths;
+    };
+    return getPaths(paths, obj, path);
+};
+function __get(obj, path) {
+    var rst = iteratee_1.__map(analysisPath(obj, path), function (path) { return _.get(obj, path); });
+    return utils_1.__downOne(rst);
+}
+exports.__get = __get;
+function __set(obj, path, value) {
+    iteratee_1.__each(analysisPath(obj, path), function (path) {
+        _.set(obj, path, value);
+    });
+}
+exports.__set = __set;
 //# sourceMappingURL=object.js.map

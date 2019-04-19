@@ -1,6 +1,6 @@
 {
     "name": "mzmu",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "mzmu 是对lodash的一个补充",
     "repository": {
         "type": "git",
@@ -17,8 +17,6 @@
     },
     "main": "index.ts",
     "devDependencies": {
-        "lodash": "^4.17.11",
-        "moment": "^2.22.2",
         "prettier": "^1.15.3",
         "typescript": "^3.3.3333"
     },
@@ -30,6 +28,7 @@
     },
     "homepage": "https://github.com/amily4555/mzmu#readme",
     "dependencies": {
-        "@types/node": "^11.9.5"
+        "lodash": "^4.17.11",
+        "moment": "^2.22.2"
     }
 }

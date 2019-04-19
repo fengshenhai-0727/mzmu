@@ -87,7 +87,7 @@ if [ $? -eq 0 ]; then
     git pull
     git push
 
-    _tag="$_version"
+    _tag="mu_v$_version"
 
     echo "::::::::::::::: Git Tag"
     git tag $_tag -m "$_ov -> $_version :: $_commit"

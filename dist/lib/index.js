@@ -24,6 +24,7 @@ var object_1 = require("./object");
 exports.extend = object_1.__extend;
 exports.tile = object_1.__tile;
 exports.stack = object_1.__stack;
+exports.get = object_1.__get;
 var array_1 = require("./array");
 exports.transpose = array_1.__transpose;
 var string_1 = require("./string");

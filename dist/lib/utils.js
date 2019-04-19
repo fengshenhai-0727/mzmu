@@ -51,6 +51,10 @@ function __upArray(one) {
     return _.isArray(one) ? one : [one];
 }
 exports.__upArray = __upArray;
+function __downOne(arr) {
+    return arr.length === 1 ? arr[0] : arr;
+}
+exports.__downOne = __downOne;
 function __param(obj, url) {
     var items = iteratee_1.__map(object_1.__tile(obj), function (value, key) {
         if (typeof value === 'string') {
