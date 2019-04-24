@@ -12,3 +12,4 @@ coverage/
 karma.conf.js
 ./dist
 .mritemp
+package.json
