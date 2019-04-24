@@ -27,5 +27,5 @@ export function __storage(key?: string, value?: any) {
 }
 
 export function __sessionStorage(key?: string, value?: any) {
-    return baseStorage(window.localStorage, key, value);
+    return baseStorage(window.sessionStorage, key, value);
 }
