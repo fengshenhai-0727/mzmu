@@ -28,7 +28,7 @@
     },
     "homepage": "https://github.com/amily4555/mzmu#readme",
     "dependencies": {
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.14",
         "moment": "^2.22.2"
     }
 }

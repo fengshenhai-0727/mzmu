@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 /**
  * 条件判断
  */
@@ -9,7 +11,7 @@
  * @param value
  * @returns {boolean}
  */
-export function __isBaseType(value: any): boolean {
+function __isBaseType(value: any): boolean {
     return Object(value) !== value;
 }
 
@@ -18,6 +20,10 @@ export function __isBaseType(value: any): boolean {
  * @param value
  * @private
  */
-export function __isWindow(value: any): boolean {
+function __isWindow(value: any): boolean {
     return Object(value) !== value;
 }
+
+
+
+export { __isBaseType, __isWindow };

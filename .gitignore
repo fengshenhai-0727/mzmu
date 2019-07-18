@@ -10,6 +10,5 @@ design/
 test/bower_components
 coverage/
 karma.conf.js
-./dist
+dist
 .mritemp
-package.json
