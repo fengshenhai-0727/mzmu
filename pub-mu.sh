@@ -74,7 +74,6 @@ cp ./package.json ./dist/package.json
 cp ./README.md ./dist/README.md
 cp ./common.d.ts ./dist/common.d.ts
 
-
 echo ":::::: 推送到NPM"
     npm publish ./dist
 

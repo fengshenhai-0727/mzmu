@@ -16,10 +16,7 @@
         "pub:mu": "bash ./pub-mu.sh"
     },
     "main": "index.ts",
-    "devDependencies": {
-        "prettier": "^1.15.3",
-        "typescript": "^3.3.3333"
-    },
+    "typings": "./common.d.ts",
     "private": false,
     "author": "Mizi Lin<amily4555@gmail.com>",
     "license": "MIT",
@@ -27,6 +24,11 @@
         "url": "https://github.com/amily4555/mzmu/issues"
     },
     "homepage": "https://github.com/amily4555/mzmu#readme",
+    "devDependencies": {
+        "@types/node": "^12.7.2",
+        "prettier": "^1.15.3",
+        "typescript": "^3.3.3333"
+    },
     "dependencies": {
         "lodash": "^4.17.14",
         "moment": "^2.22.2"
