@@ -1,6 +1,6 @@
 {
     "name": "mzmu",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "description": "mzmu 是对lodash的一个补充",
     "repository": {
         "type": "git",
@@ -16,7 +16,6 @@
         "pub:mu": "bash ./pub-mu.sh"
     },
     "main": "index.ts",
-    "typings": "./common.d.ts",
     "private": false,
     "author": "Mizi Lin<amily4555@gmail.com>",
     "license": "MIT",
