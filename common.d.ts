@@ -2,10 +2,9 @@ declare type Primitive = boolean | number | string | symbol | null | undefined;
 
 declare type NonPrimitive = object;
 
-declare type SoFunc = ((val: any) => any) | any;
+declare type MtObject = { [propName: string]: any };
 
-// 对象字面量 怎么表示?
-declare type Obj = object;
+declare type SoFunc = ((val: any) => any) | any;
 
 declare type Value = string | number | symbol | any[] | any;
 
@@ -29,10 +28,12 @@ declare type IterateeProperty<T> = Iteratee<T> | PropertyName;
 
 declare type IterateeAtLeastProperty<T> = Iteratee<T> | AtLeastPropertyName;
 
-declare type DataRow = Obj;
+declare type DataRow = MtObject;
 
-declare type DataTable = Obj[];
+declare type DataTable = MtObject[];
 
 declare type MtFunction = (...args: any[]) => any;
 
-declare type MtObject = { [propName: string]: any };
+declare type FalseType = 'undefined' | 'nil' | 'false' | 'empty';
+
+
