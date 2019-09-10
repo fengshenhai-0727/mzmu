@@ -28,7 +28,7 @@ export function __stringFormat(str: string, format: any) {
     let type = __type(format);
 
     if (type === 'array') {
-        return str.replace(/\{(\d+)\}/g, function(m, i) {
+        return str.replace(/\{(\d+?)\}/g, function(m, i) {
             return __ifnvl(format[i], m);
         });
     } else {

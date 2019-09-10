@@ -137,3 +137,25 @@ export function __set(obj: MtObject, path: string, value: any) {
         _.set(obj, path, value);
     });
 }
+
+/**
+ * 针对特殊的对象面位量,
+ * 它只有一组属性值对
+ * @private
+ */
+function __oneKey(obj: Record<string, any>) {
+    const keys = _.keys(obj);
+    return keys.length === 1 ? keys[0] : keys;
+}
+
+/**
+ * 针对特殊的对象面位量,
+ * 它只有一组属性值对
+ * @private
+ */
+function __oneVal(obj: Record<string, any>) {
+    const vals = _.values(obj);
+    return vals.length === 1 ? vals[0] : vals;
+}
+
+export { __oneKey as oneKey, __oneVal as oneVal };

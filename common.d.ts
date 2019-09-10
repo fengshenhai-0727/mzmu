@@ -2,7 +2,7 @@ declare type Primitive = boolean | number | string | symbol | null | undefined;
 
 declare type NonPrimitive = object;
 
-declare type MtObject = { [propName: string]: any };
+declare type MtObject = Record<string, any>;
 
 declare type SoFunc = ((val: any) => any) | any;
 

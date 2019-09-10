@@ -18,7 +18,11 @@ import { __or } from './utils';
  * @private
  */
 export function __each(collection: Collection | string | number, iteratee: Iteratee<void | boolean>): void {
-    if (_.isString(collection)) {
+    if (_.isNil(collection)) {
+        return void 0;
+    }
+
+    if (typeof collection === 'string') {
         collection = (collection as string).split('');
         return __each(collection, iteratee);
     }
@@ -29,11 +33,12 @@ export function __each(collection: Collection | string | number, iteratee: Itera
         return __each(collection, iteratee);
     }
 
-    if (_.isNil(collection)) {
-        return void 0;
-    }
-
-    return _.each(collection, iteratee);
+    /**
+     * fix with mizi.20190909
+     * _.each 会遍历 likeArray 的对象，如 对象中有 length 的属性
+     * 修改后使用 forOwn 避免出现如此情况
+     */
+    return _.forOwn(collection, iteratee);
 }
 
 /**

@@ -3,7 +3,7 @@ export { __noop as noop } from './__noop';
 export { __isNil as isNil, __isEmpty as isEmpty, __isExist as isExist, __isNotEmpty as isNotEmpty } from './__theory';
 export { __if as iffi, __empty as empty, __exist as exist, __ifempty as ifempty, __ifnvl as ifnvl, __run as run } from './run';
 export { __each as each, __map as map } from './iteratee';
-export { __extend as extend, __tile as tile, __stack as stack, __get as get } from './object';
+export { __extend as extend, __tile as tile, __stack as stack, __get as get, oneKey, oneVal } from './object';
 export { __transpose as transpose } from './array';
 
 export {
