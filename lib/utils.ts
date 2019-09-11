@@ -70,6 +70,11 @@ export function __upArray(one: any) {
     return _.isArray(one) ? one : [one];
 }
 
+/**
+ * 数组长度为1的时候，降维返回数组内容
+ * @param arr
+ * @private
+ */
 export function __downOne(arr: any[]): any {
     return arr.length === 1 ? arr[0] : arr;
 }

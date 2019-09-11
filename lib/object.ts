@@ -97,6 +97,11 @@ export function __stack(obj: { [propName: string]: any }) {
 
 export const __untile = __stack;
 
+/**
+ * 解析路径中带[*]的路径
+ * @param obj
+ * @param path
+ */
 let analysisPath = function(obj, path) {
     let reg = /\[\s*\*\s*]/;
 
@@ -127,16 +132,38 @@ let analysisPath = function(obj, path) {
     return getPaths(paths, obj, path);
 };
 
+/**
+ * 根据路径获取值
+ * @param obj
+ * @param path
+ * @private
+ */
 export function __get(obj: MtObject, path: string) {
     let rst = __map(analysisPath(obj, path), (path) => _.get(obj, path));
     return __downOne(rst);
 }
 
-export function __set(obj: MtObject, path: string, value: any) {
-    __each(analysisPath(obj, path), (path) => {
-        _.set(obj, path, value);
-    });
+/**
+ * 根据路径设置值
+ */
+function __set(src: MtObject, pathValMap: MtObject);
+function __set(src: MtObject, path: string, value: any);
+function __set(...args) {
+    let len = args.length;
+    if (args.length === 2) {
+        let [src, pathValMap] = args;
+        __each(pathValMap, (val, path: string) => {
+            __set(src, path, val);
+        });
+    } else if (len === 3) {
+        let [src, path, value] = args;
+        __each(analysisPath(src, path), (path) => {
+            _.set(src, path, value);
+        });
+    }
 }
+
+export { __set as set };
 
 /**
  * 针对特殊的对象面位量,
