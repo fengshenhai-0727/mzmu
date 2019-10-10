@@ -146,9 +146,9 @@ export function __get(obj: MtObject, path: string) {
 /**
  * 根据路径设置值
  */
-function __set(src: MtObject, pathValMap: MtObject);
-function __set(src: MtObject, path: string, value: any);
-function __set(...args) {
+export function __set(src: MtObject, pathValMap: MtObject);
+export function __set(src: MtObject, path: string, value: any);
+export function __set(...args) {
     let len = args.length;
     if (args.length === 2) {
         let [src, pathValMap] = args;
@@ -163,14 +163,12 @@ function __set(...args) {
     }
 }
 
-export { __set as set };
-
 /**
  * 针对特殊的对象面位量,
  * 它只有一组属性值对
  * @private
  */
-function __oneKey(obj: Record<string, any>) {
+export function __oneKey(obj: Record<string, any>) {
     const keys = _.keys(obj);
     return keys.length === 1 ? keys[0] : keys;
 }
@@ -180,9 +178,8 @@ function __oneKey(obj: Record<string, any>) {
  * 它只有一组属性值对
  * @private
  */
-function __oneVal(obj: Record<string, any>) {
+export function __oneVal(obj: Record<string, any>) {
     const vals = _.values(obj);
     return vals.length === 1 ? vals[0] : vals;
 }
 
-export { __oneKey as oneKey, __oneVal as oneVal };
