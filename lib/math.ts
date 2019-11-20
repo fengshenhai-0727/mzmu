@@ -16,6 +16,11 @@ function getDecimalLen(num: number) {
     return decimals.length;
 }
 
+/**
+ * 参数相加
+ * @param nums
+ * @private
+ */
 export function __add(...nums: number[]) {
     let max = Math.max(...__map(nums, (num) => getDecimalLen(num)));
     let rst: number = 0;
@@ -26,18 +31,39 @@ export function __add(...nums: number[]) {
     return rst / pow;
 }
 
+/**
+ * 参数相减
+ * @param nums
+ * @private
+ */
 export function __subtract(...nums: number[]) {
-    let first = nums.shift();
+    if (nums.length < 2) {
+        return nums[0];
+    }
+
+    let first = nums.shift() as number;
     nums = __map(nums, (num) => -num);
     return __add.apply(this, [first, ...nums]);
 }
 
+/**
+ * 参数相乘
+ * @param num1
+ * @param num2
+ * @private
+ */
 export function __multiple(num1: number, num2: number) {
     let pow1 = Math.pow(10, getDecimalLen(num1));
     let pow2 = Math.pow(10, getDecimalLen(num2));
     return (num1 * pow1 * (num2 * pow2)) / (pow1 * pow2);
 }
 
+/**
+ * 参数相减
+ * @param num1
+ * @param num2
+ * @private
+ */
 export function __divide(num1: number, num2: number) {
     let pow1 = Math.pow(10, getDecimalLen(num1));
     let pow2 = Math.pow(10, getDecimalLen(num2));

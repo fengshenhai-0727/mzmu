@@ -12,6 +12,7 @@ import { __isNil } from './__theory';
 import { __extend } from './object';
 import { __multiple } from './math';
 import { __each } from './iteratee';
+import { Value } from '../type';
 const moment = require('moment');
 
 /**
@@ -24,7 +25,7 @@ const moment = require('moment');
  * mzmu.format('江山如此多娇, {content}', {content: '引无数英雄竞折腰'})
  * // => "江山如此多娇, 引无数英雄竞折腰"
  */
-export function __stringFormat(str: string, format: any) {
+export function __stringFormat(str: string, format: any): string {
     let type = __type(format);
 
     if (type === 'array') {
@@ -38,7 +39,7 @@ export function __stringFormat(str: string, format: any) {
     }
 }
 
-function __thousands(num: number | string, count: number = 3, delimiter: string = ',') {
+function __thousands(num: number | string, count: number = 3, delimiter: string = ','): string {
     let reg = new RegExp(`(\\d{1,${count}})(?=(?:\\d{${count}})+$)`, 'g');
     let str = num + '';
     let [nums] = str.split(/[%kw千万]/);
@@ -99,7 +100,7 @@ export function __numberFormat(num: number, options: NumberFormatOptions): strin
             // rst = rst as number * 1000;
             // rst = _.multiply(rst, scaler);
             // rst = rst / 1000;
-            rst = __multiple(rst, scaler);
+            rst = __multiple(rst, scaler as number);
         }
     }
 
@@ -115,7 +116,7 @@ export function __numberFormat(num: number, options: NumberFormatOptions): strin
         let size = Math.abs(count);
         let pow = Math.pow(10, size);
         rst = +rst * pow;
-        rst = Math[math](rst);
+        rst = Math[math as string](rst);
         rst = (rst + '').split('.')[0];
         rst = +rst / pow;
 
@@ -145,7 +146,7 @@ export function __numberFormat(num: number, options: NumberFormatOptions): strin
     return rst as string;
 }
 
-export function __dateFormat(date: any, format: string) {
+export function __dateFormat(date: any, format: string): string {
     let mt = moment(date);
     return mt.format(format);
 }
@@ -210,7 +211,7 @@ export function __dateFormat(date: any, format: string) {
  * mu.format(1.2365, 'round:permile:2')
  * // -> "1236.5‰"
  */
-export function __format(value: Value, format?: any | any[] | NumberFormatOptions, dateLike: boolean = false): string {
+export function __format(value: Value, format?: any | any[] | NumberFormatOptions, dateLike: boolean = false) {
     let type = __type(value);
 
     // for date format
@@ -263,6 +264,8 @@ export function __format(value: Value, format?: any | any[] | NumberFormatOption
             return __dateFormat(value, format);
         case 'boolean':
             return (format || ['false', 'true'])[value ? 1 : 0];
+        default:
+            return value.toString();
     }
 }
 

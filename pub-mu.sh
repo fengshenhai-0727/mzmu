@@ -72,7 +72,6 @@ echo "::::: 推送到NPM $_ov -> $_version"
 ## 拷贝文件
 cp ./package.json ./dist/package.json
 cp ./README.md ./dist/README.md
-cp ./common.d.ts ./dist/common.d.ts
 
 echo ":::::: 推送到NPM"
     npm publish ./dist

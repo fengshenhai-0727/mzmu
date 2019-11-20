@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { Collection, Iteratee, MtFunction, MtObject } from '../type';
 
 function statement(name: string) {
     return (...args: any[]) => {
@@ -88,7 +89,9 @@ export const ready = statement('mu.ready');
 /**
  * @deprecated
  */
-export const isNull = (value: any) => warn('建议使用_.isNull 替换 mu.isNull', _.isNull, value);
+export const isNull = (value: any) => {
+    warn('建议使用_.isNull 替换 mu.isNull', _.isNull, value);
+};
 /**
  * @deprecated
  */
@@ -235,8 +238,7 @@ export const pick = (obj: object, iteratee: Iteratee<any>) => warn('建议使用
 /**
  * @deprecated
  */
-export const bind = (func: MtFunction, context: any, ...args: any[]) =>
-    warn('建议使用_.bind 替换 mu.bind', _.bind, func, context, ...args);
+export const bind = (func: MtFunction, context: any, ...args: any[]) => warn('建议使用_.bind 替换 mu.bind', _.bind, func, context, ...args);
 
 /**
  * @deprecated
@@ -251,7 +253,8 @@ export const debounce = (func: MtFunction, ms: number) => warn('建议使用_.de
 /**
  * @deprecated
  */
-export const after = (time: number, func: MtFunction, context?: MtObject) => warn('建议使用_.after 替换 mu.after', _.after, time, func, context);
+export const after = (time: number, func: MtFunction, context?: MtObject) =>
+    warn('建议使用_.after 替换 mu.after', _.after, time, func, context);
 
 /**
  * @deprecated
@@ -267,7 +270,6 @@ export const concat = (arr: any[], ...values: any[]) => warn('建议使用_.conc
  * @deprecated
  */
 export const now = () => warn('建议使用_.now 替换 mu.now', _.now);
-
 
 export const intercept = (str: string, max: number, adjust: number, symbol: string) => {
     return _.truncate(str, {

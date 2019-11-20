@@ -4,6 +4,7 @@ import { __ifnvl, __run, __exist } from './run';
 import { __each, __map } from './iteratee';
 import { __type } from './__type';
 import { __downOne } from './utils';
+import { MtObject } from '../type';
 
 /**
  * mu.extend(isDeep: boolean, ...targets: any[])
@@ -152,8 +153,8 @@ export function __set(...args) {
     let len = args.length;
     if (args.length === 2) {
         let [src, pathValMap] = args;
-        __each(pathValMap, (val, path: string) => {
-            __set(src, path, val);
+        __each(pathValMap, (val, path) => {
+            __set(src, path as string, val);
         });
     } else if (len === 3) {
         let [src, path, value] = args;

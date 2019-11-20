@@ -1,6 +1,7 @@
 import { __sofunc } from './__sofunc';
 import { __noop } from './__noop';
 import { __isEmpty, __isNil, __isExist } from './__theory';
+import { SoFunc, Value } from '../type';
 
 /**
  * mu.empty(val: any, trueFunc: SoFunc, falseFunc: SoFunc = __noop)
