@@ -15,7 +15,7 @@ export function __reorigin(value: any) {
         string: '',
         number: 0,
         date: new Date(0),
-        regex: new RegExp(void 0),
+        regex: new RegExp(''),
         object: {},
         array: [],
         function: _.noop

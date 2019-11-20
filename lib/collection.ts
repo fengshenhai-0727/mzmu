@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import { __map } from './iteratee';
-import { MU } from '../mu-const';
+import { MU } from '../mu';
 import { __isEmpty, __isNil } from './__theory';
+import { Collection, Iteratee, KeyInx, FalseType } from '../type';
 
 /**
  * 浅拷贝
@@ -43,8 +44,6 @@ export function __length(collection: Collection) {
  * mu.compact
  * 创建一个新的集合，去除原集合中的所有的非假值元素
  * @param collection
- * @param type
- * @param isDeep
  * @private
  */
 

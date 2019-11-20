@@ -2,8 +2,9 @@ import * as _ from 'lodash';
 import { __type } from './__type';
 import { __ifnvl } from './run';
 import { __isEmpty } from './__theory';
-import { MU } from '../mu-const';
+import { MU } from '../mu';
 import { __or } from './utils';
+import { Collection, Iteratee, Many } from '../type';
 
 // 迭代器
 
@@ -92,7 +93,7 @@ export function __each(collection: Collection | string | number, iteratee: Itera
 
 export function __map(collection: Collection | string | number, iteratee: Iteratee<Many<any | '__remove_map__'>>, target?: [] | {}): any {
     let type = __type(target || collection);
-    target = type === 'object' ? {} : [];
+    let _target = type === 'object' ? {} : [];
 
     collection = _.cloneDeep(collection);
     __each(collection, (value, key, context) => {
@@ -105,15 +106,15 @@ export function __map(collection: Collection | string | number, iteratee: Iterat
         if (!__or(rst, MU.MAP_SKIP, MU.MAP_REMOVE)) {
             if (type === 'object') {
                 if (_.has(rst, '__key__')) {
-                    target[rst.__key__] = __ifnvl(rst.__value__, rst.__val__);
+                    _target[rst.__key__] = __ifnvl(rst.__value__, rst.__val__);
                 } else {
-                    target[key] = rst;
+                    _target[key] = rst;
                 }
             } else {
-                (target as any[]).push(rst);
+                (_target as any[]).push(rst);
             }
         }
     });
 
-    return target;
+    return _target;
 }
