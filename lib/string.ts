@@ -164,7 +164,7 @@ export function __dateFormat(date: any, format: string): string {
  * mu.format('Hello {0}, {1}!', 'Mizi', 'Welcome')
  * // -> "Hello Mizi, Welcome!"
  *
- *  mu.format('Hello {name}, {word}!', {name: 'mizi', word: 'welcome'})
+ * mu.format('Hello {name}, {word}!', {name: 'mizi', word: 'welcome'})
  *  // -> "Hello mizi, welcome!"
  *
  * ::: 时间格式化
@@ -265,7 +265,7 @@ export function __format(value: Value, format?: any | any[] | NumberFormatOption
         case 'boolean':
             return (format || ['false', 'true'])[value ? 1 : 0];
         default:
-            return value.toString();
+            return _.toString(value);
     }
 }
 
