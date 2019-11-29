@@ -12,33 +12,75 @@ import { __isNil } from './__theory';
 import { __extend } from './object';
 import { __multiple } from './math';
 import { __each } from './iteratee';
-import { Value } from '../type';
+import { Value, MtObject } from '../type';
+import { __or } from './utils';
 const moment = require('moment');
+
+/**
+ * 在字符串format时对象的情况下
+ * 对{}内的key进行补充，添加前后缀字符串填充
+ * 填充条件当 key 所对应的值为假值的时候，不显示字符串
+ * 其多用于URI
+ */
+
+/**
+ * exp.
+ *
+ * mu.format('/user{/:id:/detail}}', {id: 123})
+ * // -> /user/123/detail
+ * mu.format('/user{/:id}}', {id: null})
+ * // -> /user
+ */
+
+function stringfix(keyStr: string, obj: Record<string, any>, source: string, nullInstead?: string) {
+    if (keyStr) {
+        let prefix, key, suffix;
+        let keys = keyStr.split(':');
+        if (keys.length > 1) {
+            [prefix, key, suffix] = keys;
+        } else {
+            key = keyStr;
+        }
+
+        let value = _.get(obj, key);
+
+        if (!_.isNil(nullInstead)) {
+            value = __ifnvl(value, nullInstead);
+        }
+
+        if (_.trim(value) === '') {
+            return value;
+        }
+
+        return [__ifnvl(prefix, ''), `${value}`, __ifnvl(suffix, '')].join('');
+    }
+    return source;
+}
 
 /**
  * 字符创format
  * @param str
  * @param format
+ * @param nullInstead 值为null的时候的替代值
  * @private
  *
  * mzmu.format('江山如此多娇, {0}', ['引无数英雄竞折腰'])
  * mzmu.format('江山如此多娇, {content}', {content: '引无数英雄竞折腰'})
  * // => "江山如此多娇, 引无数英雄竞折腰"
  */
-export function __stringFormat(str: string, format: any): string {
-    let type = __type(format);
-
-    if (type === 'array') {
-        return str.replace(/\{(\d+?)\}/g, function(m, i) {
-            return __ifnvl(format[i], m);
-        });
-    } else {
-        return str.replace(/\{(.*?)\}/g, function(m, i) {
-            return __ifnvl(_.get(format, i), m);
-        });
-    }
+export function __stringFormat(str: string, format: any, nullInstead?: string): string {
+    return str.replace(/\{(.*?)\}/g, function(m, i) {
+        return stringfix(i, format, m, nullInstead);
+    });
 }
 
+/**
+ * 数字位数拆分
+ * @param num
+ * @param count
+ * @param delimiter
+ * @private
+ */
 function __thousands(num: number | string, count: number = 3, delimiter: string = ','): string {
     let reg = new RegExp(`(\\d{1,${count}})(?=(?:\\d{${count}})+$)`, 'g');
     let str = num + '';
@@ -76,9 +118,45 @@ interface NumberFormatOptions {
     len?: number;
 }
 
-export function __numberFormat(num: number, options: NumberFormatOptions): string {
+export function __numberFormat(value: number, options: NumberFormatOptions): string;
+/**
+ * alias 只是 options 的快捷方式会字符串形式
+ * @param value
+ * @param alias
+ * @private
+ */
+export function __numberFormat(value: number, alias?: string);
+export function __numberFormat(value: number, arg?: any): string {
+    let options = __run(
+        typeof arg === 'string',
+        () => {
+            let math, count = 2, unit;
+            let format = arg.split(':');
+            switch (format.length) {
+                case 1:
+                    [math] = format;
+                    break;
+                case 2:
+                    [math, count] = format;
+                    math = math || 'round';
+                    break;
+                case 3:
+                    [math, unit, count] = format;
+                    unit = unit || 'percent';
+                    math = math || 'round';
+                    break;
+            }
+            return {
+                math,
+                unit,
+                count
+            };
+        },
+        () => arg || {}
+    );
+
     let { thousands = 3, unit, scaler, math, count, delimiter, len } = options;
-    let rst: number | string = num;
+    let rst: number | string = value;
 
     let unitMap = {
         percent: [100, '%'],
@@ -147,17 +225,12 @@ export function __numberFormat(num: number, options: NumberFormatOptions): strin
 }
 
 export function __dateFormat(date: any, format: string): string {
+    format = format.replace('yyyy-MM-dd', 'YYYY-MM-DD');
     let mt = moment(date);
     return mt.format(format);
 }
 
 /**
- * 格式化
- * @param value
- * @param format
- * @param dateLike
- * @private
- *
  * * exp.
  *
  * ::: 字符串格式化
@@ -211,62 +284,131 @@ export function __dateFormat(date: any, format: string): string {
  * mu.format(1.2365, 'round:permile:2')
  * // -> "1236.5‰"
  */
-export function __format(value: Value, format?: any | any[] | NumberFormatOptions, dateLike: boolean = false) {
+
+/**
+ * mu.format like __stringFormat
+ * @param value
+ * @param format
+ * @param nullInstead
+ * @private
+ */
+export function __format(value: string, format: MtObject | any[], nullInstead?: string);
+/**
+ * mu.format like __numberFormat
+ * @param value
+ * @param format
+ * @private
+ */
+export function __format(value: number, format: NumberFormatOptions);
+/**
+ * mu.format like __numberFormat or __dateFormat
+ * @param value
+ * @param format
+ * @private
+ */
+export function __format(value: number, format?: string);
+
+/**
+ * mu.format like __dateFormat
+ * @param value
+ * @param format
+ * @private
+ */
+export function __format(value: Date, format?: string);
+/**
+ * mu.format with boolean
+ * @param value
+ * @param format
+ * @private
+ */
+export function __format(value: boolean, format: string[]);
+/**
+ * mu.format with nil
+ * @param value
+ * @param format
+ * @param nullInstead
+ * @private
+ */
+export function __format(value: null | undefined, format: any, nullInstead?: string);
+
+/**
+ * mu.format
+ * @param value
+ * @param format
+ * @param extra
+ * @private
+ */
+export function __format(value: any, format?: any, extra?: any) {
     let type = __type(value);
-
-    // for date format
-    if (_.isBoolean(format) && format) {
-        dateLike = true;
-        format = 'YYYY-MM-DD';
-    }
-
-    if (dateLike) {
-        if (moment.isMoment(value) || new Date(value).toString() !== 'Invalid Date') {
-            type = 'date';
-        }
-    }
-
     switch (type) {
         case 'string':
-            return __stringFormat(value, format);
+            return __stringFormat(value, format, extra);
         case 'number':
-            let options = {
-                thousands: 3
-            };
-
-            if (__type(format, 'object')) {
-                options = __extend(options, format);
-            } else {
-                format = format || '';
-                format = format.split(':');
-
-                let math, count, unit;
-                switch (format.length) {
-                    case 1:
-                        [math] = format;
-                        break;
-                    case 2:
-                        [math, count] = format;
-                        math = math || 'round';
-                        break;
-                    case 3:
-                        [math, unit, count] = format;
-                        unit = unit || 'percent';
-                        math = math || 'round';
-                        break;
-                }
-                options = __extend(options, { math, unit, count });
-            }
-            return __numberFormat(value, options);
+            return __numberFormat(value, format);
         case 'date':
-            format = format || 'YYYY-MM-DD';
-            format = format.replace('yyyy-MM-dd', 'YYYY-MM-DD');
             return __dateFormat(value, format);
         case 'boolean':
-            return (format || ['false', 'true'])[value ? 1 : 0];
+            return (format || ['false', 'true'])[+value];
+        case 'null':
+        case 'undefined':
+            return __ifnvl(value, __ifnvl(extra, _.toString(value)));
         default:
             return _.toString(value);
     }
+
+    // for date format
+    // if (_.isBoolean(format) && format) {
+    //     dateLike = true;
+    //     format = 'YYYY-MM-DD';
+    // }
+    //
+    // if (dateLike) {
+    //     if (moment.isMoment(value) || new Date(value).toString() !== 'Invalid Date') {
+    //         type = 'date';
+    //     }
+    // }
+    //
+    // switch (type) {
+    //     case 'string':
+    //         return __stringFormat(value, format);
+    //     case 'number':
+    //         let options = {
+    //             thousands: 3
+    //         };
+    //
+    //         if (__type(format, 'object')) {
+    //             options = __extend(options, format);
+    //         } else {
+    //             format = format || '';
+    //             format = format.split(':');
+    //
+    //             let math, count, unit;
+    //             switch (format.length) {
+    //                 case 1:
+    //                     [math] = format;
+    //                     break;
+    //                 case 2:
+    //                     [math, count] = format;
+    //                     math = math || 'round';
+    //                     break;
+    //                 case 3:
+    //                     [math, unit, count] = format;
+    //                     unit = unit || 'percent';
+    //                     math = math || 'round';
+    //                     break;
+    //             }
+    //             options = __extend(options, { math, unit, count });
+    //         }
+    //         return __numberFormat(value, options);
+    //     case 'date':
+    //         format = format || 'YYYY-MM-DD';
+    //         format = format.replace('yyyy-MM-dd', 'YYYY-MM-DD');
+    //         return __dateFormat(value, format);
+    //     case 'boolean':
+    //         return (format || ['false', 'true'])[value ? 1 : 0];
+    //     default:
+    //         return _.toString(value);
+    // }
 }
 
 export function __deepDecodeURIComponent(str: string) {
