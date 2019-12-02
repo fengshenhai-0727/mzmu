@@ -1,6 +1,6 @@
 {
     "name": "mzmu",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "description": "mzmu 是对lodash的一个补充",
     "repository": {
         "type": "git",
@@ -29,6 +29,8 @@
         "typescript": "^3.3.3333"
     },
     "dependencies": {
+        "bit-bin": "^14.5.0",
+        "global": "^4.4.0",
         "lodash": "^4.17.14",
         "moment": "^2.22.2"
     }

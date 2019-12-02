@@ -130,7 +130,9 @@ export function __numberFormat(value: number, arg?: any): string {
     let options = __run(
         typeof arg === 'string',
         () => {
-            let math, count = 2, unit;
+            let math,
+                count = 2,
+                unit;
             let format = arg.split(':');
             switch (format.length) {
                 case 1:
@@ -307,7 +309,6 @@ export function __format(value: number, format: NumberFormatOptions);
  * @private
  */
 export function __format(value: number, format?: string);
-
 /**
  * mu.format like __dateFormat
  * @param value
@@ -330,7 +331,6 @@ export function __format(value: boolean, format: string[]);
  * @private
  */
 export function __format(value: null | undefined, format: any, nullInstead?: string);
-
 /**
  * mu.format
  * @param value
@@ -351,64 +351,10 @@ export function __format(value: any, format?: any, extra?: any) {
             return (format || ['false', 'true'])[+value];
         case 'null':
         case 'undefined':
-            return __ifnvl(value, __ifnvl(extra, _.toString(value)));
+            return __ifnvl(value, _.toString(__ifnvl(format, _.toString(value))));
         default:
             return _.toString(value);
     }
-
-    // for date format
-    // if (_.isBoolean(format) && format) {
-    //     dateLike = true;
-    //     format = 'YYYY-MM-DD';
-    // }
-    //
-    // if (dateLike) {
-    //     if (moment.isMoment(value) || new Date(value).toString() !== 'Invalid Date') {
-    //         type = 'date';
-    //     }
-    // }
-    //
-    // switch (type) {
-    //     case 'string':
-    //         return __stringFormat(value, format);
-    //     case 'number':
-    //         let options = {
-    //             thousands: 3
-    //         };
-    //
-    //         if (__type(format, 'object')) {
-    //             options = __extend(options, format);
-    //         } else {
-    //             format = format || '';
-    //             format = format.split(':');
-    //
-    //             let math, count, unit;
-    //             switch (format.length) {
-    //                 case 1:
-    //                     [math] = format;
-    //                     break;
-    //                 case 2:
-    //                     [math, count] = format;
-    //                     math = math || 'round';
-    //                     break;
-    //                 case 3:
-    //                     [math, unit, count] = format;
-    //                     unit = unit || 'percent';
-    //                     math = math || 'round';
-    //                     break;
-    //             }
-    //             options = __extend(options, { math, unit, count });
-    //         }
-    //         return __numberFormat(value, options);
-    //     case 'date':
-    //         format = format || 'YYYY-MM-DD';
-    //         format = format.replace('yyyy-MM-dd', 'YYYY-MM-DD');
-    //         return __dateFormat(value, format);
-    //     case 'boolean':
-    //         return (format || ['false', 'true'])[value ? 1 : 0];
-    //     default:
-    //         return _.toString(value);
-    // }
 }
 
 export function __deepDecodeURIComponent(str: string) {
