@@ -48,11 +48,13 @@ function stringfix(keyStr: string, obj: Record<string, any>, source: string, nul
             value = __ifnvl(value, nullInstead);
         }
 
+        value = `${value}`;
+
         if (_.trim(value) === '') {
             return value;
         }
 
-        return [__ifnvl(prefix, ''), `${value}`, __ifnvl(suffix, '')].join('');
+        return [__ifnvl(prefix, ''), value, __ifnvl(suffix, '')].join('');
     }
     return source;
 }
