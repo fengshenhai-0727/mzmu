@@ -229,6 +229,8 @@ export function __numberFormat(value: number, arg?: any): string {
 }
 
 export function __dateFormat(date: any, format: string): string {
+    format = format.replace('yyyy', 'YYYY');
+    format = format.replace('yy', 'YY');
     format = format.replace('yyyy-MM-dd', 'YYYY-MM-DD');
     let mt = moment(date);
     return mt.format(format);
@@ -301,30 +303,34 @@ export function __format(value: string, format: MtObject | any[], nullInstead?: 
  * mu.format like __numberFormat
  * @param value
  * @param format
+ * @param nullInstead
  * @private
  */
-export function __format(value: number, format: NumberFormatOptions);
+export function __format(value: number, format: NumberFormatOptions, nullInstead?: string);
 /**
  * mu.format like __numberFormat or __dateFormat
  * @param value
  * @param format
+ * @param nullInstead
  * @private
  */
-export function __format(value: number, format?: string);
+export function __format(value: number, format?: string, nullInstead?: string);
 /**
  * mu.format like __dateFormat
  * @param value
  * @param format
+ * @param nullInstead
  * @private
  */
-export function __format(value: Date, format?: string);
+export function __format(value: Date, format?: string, nullInstead?: string);
 /**
  * mu.format with boolean
  * @param value
  * @param format
+ * @param nullInstead
  * @private
  */
-export function __format(value: boolean, format: string[]);
+export function __format(value: boolean, format: string[], nullInstead?: string);
 /**
  * mu.format with nil
  * @param value
@@ -337,14 +343,14 @@ export function __format(value: null | undefined, format: any, nullInstead?: str
  * mu.format
  * @param value
  * @param format
- * @param extra
+ * @param nullInstead
  * @private
  */
-export function __format(value: any, format?: any, extra?: any) {
+export function __format(value: any, format?: any, nullInstead?: any) {
     let type = __type(value);
     switch (type) {
         case 'string':
-            return __stringFormat(value, format, extra);
+            return __stringFormat(value, format, nullInstead);
         case 'number':
             return __numberFormat(value, format);
         case 'date':
@@ -353,7 +359,7 @@ export function __format(value: any, format?: any, extra?: any) {
             return (format || ['false', 'true'])[+value];
         case 'null':
         case 'undefined':
-            return __ifnvl(value, _.toString(__ifnvl(format, _.toString(value))));
+            return __isNil(nullInstead) ? __ifnvl(value, _.toString(__ifnvl(format, _.toString(value)))) : __format(nullInstead, format);
         default:
             return _.toString(value);
     }
